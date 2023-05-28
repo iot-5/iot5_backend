@@ -39,10 +39,9 @@
 
 ### Request
 
-`POST /addpoint/`
+`POST /getpoint/`
 
 {
-  "name": "p2",
   "data": [
     {
       "mac": "95:1f:33:ac:35:11",
@@ -58,7 +57,6 @@
     }
   ]
 }
-
 
 ### Response
 
