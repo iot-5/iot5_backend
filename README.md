@@ -62,9 +62,10 @@
 
     HTTP/1.1 200 OK
     Server: Werkzeug/2.3.4 Python/3.8.9
-    Date: Sun, 28 May 2023 08:49:53 GMT
+    Date: Sun, 28 May 2023 08:51:21 GMT
     Content-Type: application/json
-    Content-Length: 40
+    Content-Length: 18
     Connection: close
 
-    {"message":"Point added successfully."}
+    {"location":"p3"}
+
