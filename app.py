@@ -39,5 +39,21 @@ def get_point():
 
     return jsonify({'user_location': user_location})
 
+@app.route('/addpoint', methods=['POST'])
+def add_point():
+    json_data = request.get_json()
+
+    location_name = json_data['name']
+    data_points = json_data['data']
+
+    with open('data.csv', 'a', newline='') as file:
+        csv_writer = csv.writer(file)
+        for point in data_points:
+            mac = point['mac']
+            rssi = point['rssi']
+            csv_writer.writerow([location_name, mac, rssi])
+
+    return jsonify({'message': 'Data points added successfully.'})
+
 if __name__ == '__main__':
     app.run()
