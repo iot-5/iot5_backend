@@ -83,10 +83,8 @@ class LearnLocation(Exception):
 def get_pipeline(clf=RandomForestClassifier(n_estimators=100, class_weight="balanced")):
     return make_pipeline(DictVectorizer(sparse=False), clf)
 
-
-def train_model(path=None):
+def train_model(X, y, path=None):
     model_file = get_model_file(path)
-    X, y = get_train_data(path)
     if len(X) == 0:
         raise ValueError("No wifi access points have been found during training")
     # fantastic: because using "quality" rather than "rssi", we expect values 0-150
@@ -100,9 +98,11 @@ def train_model(path=None):
     return lp
 
 
+
 def get_model(path=None):
     model_file = get_model_file(path)
     if not os.path.isfile(model_file):  # pragma: no cover
+        return None
         msg = "First learn a location, e.g. with `whereami learn -l kitchen`."
         raise LearnLocation(msg)
     with open(model_file, "rb") as f:
@@ -163,17 +163,14 @@ class Predicter():
         self.model = model
         self.device = device
         self.clf = get_model(model)
-        self.wifi_scanner = get_scanner(device)
         self.predicted_value = None
 
-    def predict(self):
-        aps = self.wifi_scanner.get_access_points()
+    def predict(self, aps):
         self.predicted_value = self.clf.predict(aps_to_dict(aps))[0]
         return self.predicted_value
 
     def refresh(self):
         self.clf = get_model(self.model)
-        self.wifi_scanner = get_scanner(self.device)
 
 
 
