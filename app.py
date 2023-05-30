@@ -1,5 +1,3 @@
-import os
-
 from flask import Flask, request, jsonify
 import json
 from sklearn.ensemble import RandomForestClassifier
@@ -25,12 +23,8 @@ def train_manual_data(json_data, model_path=None):
     pipeline.fit(X, y)
 
     if model_path is not None:
-        model_dir = os.path.dirname(model_path)
-        if not os.path.exists(model_dir):
-            os.makedirs(model_dir)
         with open(model_path, "wb") as f:
             pickle.dump(pipeline, f)
-
 
     return pipeline
 
