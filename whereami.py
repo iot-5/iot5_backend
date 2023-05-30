@@ -1,20 +1,8 @@
-import time
 import json
-from sklearn.model_selection import cross_val_score
-from tqdm import tqdm
-
-
 import os
-import pickle
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction import DictVectorizer
-from sklearn.pipeline import make_pipeline
-
-
-import json
-from collections import Counter
-
 from access_points import get_scanner
+from sklearn.model_selection import cross_val_score
+
 
 def aps_to_dict(aps):
     return {ap['ssid'] + " " + ap['bssid']: ap['quality'] for ap in aps}
@@ -55,27 +43,34 @@ def get_train_data(folder=None):
 
 
 
+import time
+import json
+
+from tqdm import tqdm
+
+
 def write_data(label_path, data):
     with open(label_path, "a") as f:
         f.write(json.dumps(data))
         f.write("\n")
 
 
-def learn(label, n=1, device=""):
+def learn(label, n=1, device="", data=None):
     path = ensure_whereami_path()
     label_path = get_label_file(path, label + ".txt")
-    for i in tqdm(range(n)):
-        if i != 0:
-            time.sleep(15)
-        try:
-            new_sample = sample(device)
-            if new_sample:
-                write_data(label_path, new_sample)
-        except KeyboardInterrupt:  # pragma: no cover
-            break
+
+    new_sample = data
+    if new_sample:
+        write_data(label_path, new_sample)
+
     train_model()
 
 
+import os
+import pickle
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_extraction import DictVectorizer
+from sklearn.pipeline import make_pipeline
 
 class LearnLocation(Exception):
     pass
@@ -84,8 +79,10 @@ class LearnLocation(Exception):
 def get_pipeline(clf=RandomForestClassifier(n_estimators=100, class_weight="balanced")):
     return make_pipeline(DictVectorizer(sparse=False), clf)
 
-def train_model(X, y, path=None):
+
+def train_model(path=None):
     model_file = get_model_file(path)
+    X, y = get_train_data(path)
     if len(X) == 0:
         raise ValueError("No wifi access points have been found during training")
     # fantastic: because using "quality" rather than "rssi", we expect values 0-150
@@ -99,18 +96,24 @@ def train_model(X, y, path=None):
     return lp
 
 
-
 def get_model(path=None):
     model_file = get_model_file(path)
     if not os.path.isfile(model_file):  # pragma: no cover
-        return None
         msg = "First learn a location, e.g. with `whereami learn -l kitchen`."
+        return None
         raise LearnLocation(msg)
     with open(model_file, "rb") as f:
         lp = pickle.load(f)
-
-
     return lp
+
+
+
+
+import json
+from collections import Counter
+
+from access_points import get_scanner
+
 
 def predict_proba(input_path=None, model_path=None, device=""):
     lp = get_model(model_path)
@@ -157,28 +160,34 @@ class Predicter():
         self.model = model
         self.device = device
         self.clf = get_model(model)
+        self.wifi_scanner = get_scanner(device)
         self.predicted_value = None
-        self.refresh()
 
-    def predict(self, aps):
-        self.refresh()
+    def predict(self):
+        aps = self.wifi_scanner.get_access_points()
         self.predicted_value = self.clf.predict(aps_to_dict(aps))[0]
         return self.predicted_value
 
     def refresh(self):
         self.clf = get_model(self.model)
+        self.wifi_scanner = get_scanner(self.device)
 
+
+
+import os
 
 
 def get_whereami_path(path=None):
     if path is None:
-        path = os.path.dirname(os.path.abspath(__file__))
+        _USERNAME = os.getenv("SUDO_USER") or os.getenv("USER") or "/"
+        path = os.path.expanduser('~' + _USERNAME)
         path = os.path.join(path, ".whereami")
     return os.path.expanduser(path)
 
 
 def ensure_whereami_path():
-    path = get_whereami_path()
+    path = os.path.dirname(os.path.abspath(__file__))
+    path = os.path.join(path, ".whereami")
     if not os.path.exists(path):  # pragma: no cover
         os.makedirs(path)
     return path

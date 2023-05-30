@@ -3,7 +3,7 @@ import pickle
 from flask import Flask, request, jsonify
 
 from whereami import aps_to_dict, get_model, sample, get_external_sample, get_train_data, train_model, Predicter, \
-    get_label_file, write_data
+    get_label_file, write_data, ensure_whereami_path, learn
 
 app = Flask(__name__)
 model = None
@@ -24,6 +24,22 @@ def train():
         y.append(label)
     train_model(X, y)
     return jsonify({"message": "Training completed"})
+
+
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route("/learn", methods=["POST"])
+def learn_api():
+    data = request.json
+    label = data["name"]
+    train_data = data["data"]
+    # 데이터를 learn 함수의 매개변수로 전달하여 학습
+    learn(label, data=train_data)
+
+    return jsonify({"message": "Learning completed"})
+
 
 
 @app.route("/predict", methods=["POST"])
