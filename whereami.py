@@ -100,15 +100,15 @@ def train_model(path=None):
         pickle.dump(lp, f)
     return lp
 
+
 def get_model(path=None):
     model_file = get_model_file(path)
     if not os.path.isfile(model_file):  # pragma: no cover
-        lp = train_model(path)  # 모델이 없으면 학습 수행
-    else:
-        with open(model_file, "rb") as f:
-            lp = pickle.load(f)
+        msg = "First learn a location, e.g. with `whereami learn -l kitchen`."
+        raise LearnLocation(msg)
+    with open(model_file, "rb") as f:
+        lp = pickle.load(f)
     return lp
-
 
 
 
