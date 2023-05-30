@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 predicter = Predicter()
 
-@app.route('/learn', methods=['POST'])
+@app.route('/train', methods=['POST'])
 def learn_endpoint():
     data = request.get_json()
     name = data.get('name')
