@@ -12,12 +12,12 @@
   "data": [
     {
       "ssid": "AP3",
-      "mac": "94:64:24:9f:03:A9",
+      "bssid": "94:64:24:9f:03:A9",
       "quality": 20
     },
     {
       "ssid": "AP3",
-      "mac": "AA:BB:CC:DD:EE:A9",
+      "bssid": "AA:BB:CC:DD:EE:A9",
       "quality": 10
     }
   ]
@@ -47,12 +47,12 @@
   "data": [
     {
       "ssid": "AP3",
-      "mac": "94:64:24:9f:03:A9",
+      "bssid": "94:64:24:9f:03:A9",
       "quality": 20
     },
     {
       "ssid": "AP3",
-      "mac": "AA:BB:CC:DD:EE:A9",
+      "bssid": "AA:BB:CC:DD:EE:A9",
       "quality": 10
     }
   ]
