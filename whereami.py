@@ -161,9 +161,8 @@ class Predicter():
         self.wifi_scanner = get_scanner(device)
         self.predicted_value = None
 
-    def predict(self, aps):
+    def     predict(self, aps):
         self.refresh()
-        aps = self.wifi_scanner.get_access_points()
         self.predicted_value = self.clf.predict(aps_to_dict(aps))[0]
         return self.predicted_value
 
