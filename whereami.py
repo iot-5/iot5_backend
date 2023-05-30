@@ -1,6 +1,5 @@
 import json
 import os
-from access_points import get_scanner
 from sklearn.model_selection import cross_val_score
 
 def aps_to_dict(aps):
@@ -89,17 +88,13 @@ def train_model(path=None):
     model_file = get_model_file(path)
     X, y = get_train_data(path)
     if len(X) == 0:
-        lp = get_pipeline()
-        # raise ValueError("No wifi access points have been found during training")
-
-
+        raise ValueError("No wifi access points have been found during training")
     # fantastic: because using "quality" rather than "rssi", we expect values 0-150
     # 0 essentially indicates no connection
     # 150 is something like best possible connection
     # Not observing a wifi will mean a value of 0, which is the perfect default.
-    else:
-        lp = get_pipeline()
-        lp.fit(X, y)
+    lp = get_pipeline()
+    lp.fit(X, y)
     with open(model_file, "wb") as f:
         pickle.dump(lp, f)
     return lp
@@ -109,8 +104,7 @@ def get_model(path=None):
     model_file = get_model_file(path)
     if not os.path.isfile(model_file):  # pragma: no cover
         msg = "First learn a location, e.g. with `whereami learn -l kitchen`."
-        train_model()
-        # raise LearnLocation(msg)
+        raise LearnLocation(msg)
     with open(model_file, "rb") as f:
         lp = pickle.load(f)
     return lp
