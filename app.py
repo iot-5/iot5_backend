@@ -22,6 +22,7 @@ def train_manual_data(json_data, model_path=None):
     pipeline = make_pipeline(DictVectorizer(sparse=False), clf)
     pipeline.fit(X, y)
 
+    print(model_path)
     if model_path is not None:
         with open(model_path, "wb") as f:
             pickle.dump(pipeline, f)
