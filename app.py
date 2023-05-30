@@ -10,7 +10,7 @@ model = None
 
 def load_model():
     global model
-    model = get_model("model.pkl")  # 모델 불러오기
+    model = get_model()  # 모델 불러오기
 
 
 @app.route('/predict', methods=['POST'])
