@@ -5,8 +5,7 @@ from sklearn.model_selection import cross_val_score
 
 
 def aps_to_dict(aps):
-    return {ap['bssid']: ap['quality'] for ap in aps}
-    # return {ap['ssid'] + " " + ap['bssid']: ap['quality'] for ap in aps}
+    return {ap['ssid'] + " " + ap['bssid']: ap['quality'] for ap in aps}
 
 
 def sample(device=""):
