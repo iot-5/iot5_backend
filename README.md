@@ -1,7 +1,7 @@
 # iot5_backend
 
 
-## Add Point
+## Train location
 
 ### Request
 
@@ -37,7 +37,7 @@
 
 
 
-## Get My Point
+## Predict my location
 
 ### Request
 
