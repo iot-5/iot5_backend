@@ -1,7 +1,10 @@
-import json
-import os
-from access_points import get_scanner
 from sklearn.model_selection import cross_val_score
+
+import os
+import pickle
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_extraction import DictVectorizer
+from sklearn.pipeline import make_pipeline
 
 
 def aps_to_dict(aps):
@@ -42,10 +45,12 @@ def get_train_data(folder=None):
     return X, y
 
 
-import time
-import json
 
-from tqdm import tqdm
+
+import json
+from collections import Counter
+
+from access_points import get_scanner
 
 
 def write_data(label_path, data):
@@ -63,12 +68,6 @@ def learn(label, n=1, device="", data=None):
 
     train_model()
 
-
-import os
-import pickle
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction import DictVectorizer
-from sklearn.pipeline import make_pipeline
 
 class LearnLocation(Exception):
     pass
@@ -103,15 +102,6 @@ def get_model(path=None):
     with open(model_file, "rb") as f:
         lp = pickle.load(f)
     return lp
-
-
-
-
-import json
-from collections import Counter
-
-from access_points import get_scanner
-
 
 def predict_proba(input_path=None, model_path=None, device=""):
     lp = get_model(model_path)
@@ -170,9 +160,6 @@ class Predicter():
         self.clf = get_model(self.model)
         self.wifi_scanner = get_scanner(self.device)
 
-
-
-import os
 
 
 def get_whereami_path(path=None):
