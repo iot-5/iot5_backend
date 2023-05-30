@@ -1,6 +1,20 @@
+import time
 import json
+
+from tqdm import tqdm
+
+
 import os
-from sklearn.model_selection import cross_val_score
+import pickle
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_extraction import DictVectorizer
+from sklearn.pipeline import make_pipeline
+
+
+import json
+from collections import Counter
+
+from access_points import get_scanner
 
 def aps_to_dict(aps):
     return {ap['ssid'] + " " + ap['bssid']: ap['quality'] for ap in aps}
@@ -41,12 +55,6 @@ def get_train_data(folder=None):
 
 
 
-import time
-import json
-
-from tqdm import tqdm
-
-
 def write_data(label_path, data):
     with open(label_path, "a") as f:
         f.write(json.dumps(data))
@@ -67,13 +75,6 @@ def learn(label, n=1, device=""):
             break
     train_model()
 
-
-
-import os
-import pickle
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction import DictVectorizer
-from sklearn.pipeline import make_pipeline
 
 
 class LearnLocation(Exception):
@@ -110,15 +111,6 @@ def get_model(path=None):
 
 
     return lp
-
-
-
-
-import json
-from collections import Counter
-
-from access_points import get_scanner
-
 
 def predict_proba(input_path=None, model_path=None, device=""):
     lp = get_model(model_path)
@@ -178,15 +170,6 @@ class Predicter():
 
 
 
-import os
-
-#
-# def get_whereami_path(path=None):
-#     if path is None:
-#         _USERNAME = os.getenv("SUDO_USER") or os.getenv("USER") or "/"
-#         path = os.path.expanduser('~' + _USERNAME)
-#         path = os.path.join(path, ".whereami")
-#     return os.path.expanduser(path)
 def get_whereami_path(path=None):
     if path is None:
         path = os.path.dirname(os.path.abspath(__file__))
