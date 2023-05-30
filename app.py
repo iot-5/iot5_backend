@@ -1,59 +1,56 @@
-import csv
 from flask import Flask, request, jsonify
+import json
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_extraction import DictVectorizer
+from sklearn.pipeline import make_pipeline
+import pickle
 
 app = Flask(__name__)
 
-data = []
+def train_manual_data(json_data, model_path=None):
+    data = json.loads(json_data)
+    label = data["name"]
+    aps = data["data"]
 
-with open('data.csv', 'r') as file:
-    csv_reader = csv.reader(file)
-    for row in csv_reader:
-        data.append(row)
+    X = []
+    y = []
+    for ap in aps:
+        X.append(ap)
+        y.append(label)
 
-def calculate_distance(rssi1, rssi2):
-    return abs(rssi1 - rssi2)
+    clf = RandomForestClassifier(n_estimators=100, class_weight="balanced")
+    pipeline = make_pipeline(DictVectorizer(sparse=False), clf)
+    pipeline.fit(X, y)
 
-@app.route('/getpoint', methods=['POST'])
-def get_point():
-    json_data = request.get_json()
+    if model_path is not None:
+        with open(model_path, "wb") as f:
+            pickle.dump(pipeline, f)
 
-    mac_rssi_list = json_data['data']
-    user_location = None
-    min_distance = float('inf')
+    return pipeline
 
-    for location in data:
-        location_name = location[0]
-        location_mac = location[1]
-        location_rssi = int(location[2])
+def predict_manual_data(json_data, model_path):
+    data = json.loads(json_data)
+    aps = data["data"]
 
-        for item in mac_rssi_list:
-            mac = item['mac']
-            rssi = item['rssi']
+    with open(model_path, "rb") as f:
+        pipeline = pickle.load(f)
 
-            if mac == location_mac:
-                distance = calculate_distance(rssi, location_rssi)
+    results = pipeline.predict(aps)
+    return results
 
-                if distance < min_distance:
-                    min_distance = distance
-                    user_location = location_name
+@app.route('/train', methods=['POST'])
+def train():
+    json_data = request.json
+    model_path = "model.pkl"
+    train_manual_data(json.dumps(json_data), model_path)
+    return "Model trained successfully."
 
-    return jsonify({'user_location': user_location})
-
-@app.route('/addpoint', methods=['POST'])
-def add_point():
-    json_data = request.get_json()
-
-    location_name = json_data['name']
-    data_points = json_data['data']
-
-    with open('data.csv', 'a', newline='') as file:
-        csv_writer = csv.writer(file)
-        for point in data_points:
-            mac = point['mac']
-            rssi = point['rssi']
-            csv_writer.writerow([location_name, mac, rssi])
-
-    return jsonify({'message': 'Data points added successfully.'})
+@app.route('/predict', methods=['POST'])
+def predict():
+    json_data = request.json
+    model_path = "model.pkl"
+    predictions = predict_manual_data(json.dumps(json_data), model_path)
+    return jsonify(predictions.tolist())
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000)
+    app.run()
