@@ -176,11 +176,16 @@ class Predicter():
 
 import os
 
-
+#
+# def get_whereami_path(path=None):
+#     if path is None:
+#         _USERNAME = os.getenv("SUDO_USER") or os.getenv("USER") or "/"
+#         path = os.path.expanduser('~' + _USERNAME)
+#         path = os.path.join(path, ".whereami")
+#     return os.path.expanduser(path)
 def get_whereami_path(path=None):
     if path is None:
-        _USERNAME = os.getenv("SUDO_USER") or os.getenv("USER") or "/"
-        path = os.path.expanduser('~' + _USERNAME)
+        path = os.path.dirname(os.path.abspath(__file__))
         path = os.path.join(path, ".whereami")
     return os.path.expanduser(path)
 
