@@ -107,6 +107,8 @@ def get_model(path=None):
         raise LearnLocation(msg)
     with open(model_file, "rb") as f:
         lp = pickle.load(f)
+
+
     return lp
 
 
@@ -164,8 +166,10 @@ class Predicter():
         self.device = device
         self.clf = get_model(model)
         self.predicted_value = None
+        self.refresh()
 
     def predict(self, aps):
+        self.refresh()
         self.predicted_value = self.clf.predict(aps_to_dict(aps))[0]
         return self.predicted_value
 
