@@ -1,15 +1,7 @@
-from sklearn.model_selection import cross_val_score
-
 import json
 import os
 from access_points import get_scanner
-
-import time
-import json
-
-from tqdm import tqdm
-
-
+from sklearn.model_selection import cross_val_score
 
 def aps_to_dict(aps):
     return {ap['ssid'] + " " + ap['bssid']: ap['quality'] for ap in aps}
@@ -49,6 +41,13 @@ def get_train_data(folder=None):
     return X, y
 
 
+
+import time
+import json
+
+from tqdm import tqdm
+
+
 def write_data(label_path, data):
     with open(label_path, "a") as f:
         f.write(json.dumps(data))
@@ -68,6 +67,8 @@ def learn(label, n=1, device=""):
         except KeyboardInterrupt:  # pragma: no cover
             break
     train_model()
+
+
 
 import os
 import pickle
@@ -109,8 +110,13 @@ def get_model(path=None):
         lp = pickle.load(f)
     return lp
 
+
+
+
 import json
 from collections import Counter
+
+from access_points import get_scanner
 
 
 def predict_proba(input_path=None, model_path=None, device=""):
@@ -170,39 +176,6 @@ class Predicter():
         self.clf = get_model(self.model)
         self.wifi_scanner = get_scanner(self.device)
 
-import os
-
-
-def get_whereami_path(path=None):
-    if path is None:
-        _USERNAME = os.getenv("SUDO_USER") or os.getenv("USER") or "/"
-        path = os.path.expanduser('~' + _USERNAME)
-        path = os.path.join(path, ".whereami")
-    return os.path.expanduser(path)
-
-
-def ensure_whereami_path():
-    path = get_whereami_path()
-    if not os.path.exists(path):  # pragma: no cover
-        os.makedirs(path)
-    return path
-
-
-def get_model_file(path=None, model="model.pkl"):
-    path = ensure_whereami_path() if path is None else path
-    return os.path.join(path, model)
-
-
-def get_label_file(path, label):
-    return os.path.join(get_whereami_path(path), label)
-
-
-def rename_label(label, new_label, path=None):
-    path = ensure_whereami_path() if path is None else path
-    from_path = os.path.join(path, label + ".txt")
-    new_path = os.path.join(path, new_label + ".txt")
-    os.rename(from_path, new_path)
-    print("Renamed {} to {}".format(from_path, new_path))
 
 
 import os
@@ -238,39 +211,3 @@ def rename_label(label, new_label, path=None):
     new_path = os.path.join(path, new_label + ".txt")
     os.rename(from_path, new_path)
     print("Renamed {} to {}".format(from_path, new_path))
-
-
-
-import json
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction import DictVectorizer
-from sklearn.pipeline import make_pipeline
-
-def train_manual_data(data, labels, model_path=None):
-    X = []
-    y = []
-    for label, aps in zip(labels, data):
-        for ap in aps:
-            X.append(ap)
-            y.append(label)
-
-    clf = RandomForestClassifier(n_estimators=100, class_weight="balanced")
-    pipeline = make_pipeline(DictVectorizer(sparse=False), clf)
-    pipeline.fit(X, y)
-
-    if model_path is not None:
-        with open(model_path, "wb") as f:
-            pickle.dump(pipeline, f)
-
-    return pipeline
-
-def predict_manual_data(data, model_path):
-    with open(model_path, "rb") as f:
-        pipeline = pickle.load(f)
-
-    results = []
-    for aps in data:
-        result = pipeline.predict(aps)
-        results.append(result)
-
-    return results

@@ -1,48 +1,44 @@
 import pickle
 
 from flask import Flask, request, jsonify
-
-from whereami import train_manual_data, predict_manual_data
+from whereami import aps_to_dict, get_model, sample, get_external_sample, get_train_data, train_model
 
 app = Flask(__name__)
 
-@app.route("/train", methods=["POST"])
-def train_location():
-    try:
-        req_data = request.get_json()
-        name = req_data["name"]
-        data = req_data["data"]
-
-        labels = [name]
-        train_data = [data]
-
-        model_path = "model.pkl"  # 모델 파일 경로를 지정하거나 None으로 설정하여 저장하지 않음
-
-        model = train_manual_data(train_data, labels, model_path)
+model = None
 
 
-        return jsonify({"message": "Training successful."})
+def load_model():
+    global model
+    model = get_model("model.pkl")  # 모델 불러오기
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
 
-@app.route("/predict", methods=["POST"])
+@app.route('/predict', methods=['POST'])
 def predict_location():
-    try:
-        req_data = request.get_json()
-        data = req_data["data"]
+    load_model()  # 모델 로드
+    data = request.get_json()
+    wifi_samples = data['data']
 
-        model_path = "model.pkl"  # 모델 파일 경로를 지정합니다. 학습된 모델 파일의 경로여야 합니다.
+    result = model.predict(aps_to_dict(wifi_samples))  # 예측
 
-        results = predict_manual_data(data, model_path)
-        results_list = [arr.tolist() for arr in results]
+    return jsonify({'location': result[0]})
 
-        return jsonify({"results": results_list})
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+@app.route('/train', methods=['POST'])
+def train_location():
+    data = request.get_json()
+    name = data['name']
+    train_data = data['data']
 
+    X, y = get_train_data()
+    X.extend(train_data)
+    y.extend([name] * len(train_data))
+
+    train_model()
+
+    return jsonify({'message': 'Training complete.'})
 
 
 if __name__ == "__main__":
+    load_model()  # 모델 로드
     app.run(host='0.0.0.0', port=5000)
