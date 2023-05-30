@@ -5,22 +5,20 @@
 
 ### Request
 
-`POST /addpoint/`
+`POST /train`
 
 {
-  "name": "p2",
+  "name": "location_name",
   "data": [
     {
-      "mac": "95:1f:33:ac:35:11",
-      "rssi": 40
+      "ssid": "AP3",
+      "mac": "94:64:24:9f:03:A9",
+      "quality": 20
     },
     {
-      "mac": "91:9f:33:5c:23:02",
-      "rssi": 20
-    },
-    {
-      "mac": "96:7f:23:55:29:11",
-      "rssi": 50
+      "ssid": "AP3",
+      "mac": "AA:BB:CC:DD:EE:A9",
+      "quality": 10
     }
   ]
 }
@@ -43,24 +41,23 @@
 
 ### Request
 
-`POST /getpoint/`
+`POST /predict`
 
 {
   "data": [
     {
-      "mac": "95:1f:33:ac:35:11",
-      "rssi": 40
+      "ssid": "AP3",
+      "mac": "94:64:24:9f:03:A9",
+      "quality": 20
     },
     {
-      "mac": "91:9f:33:5c:23:02",
-      "rssi": 20
-    },
-    {
-      "mac": "96:7f:23:55:29:11",
-      "rssi": 50
+      "ssid": "AP3",
+      "mac": "AA:BB:CC:DD:EE:A9",
+      "quality": 10
     }
   ]
 }
+
 
 ### Response
 
