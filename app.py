@@ -1,56 +1,48 @@
-from flask import Flask, request, jsonify
-import json
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction import DictVectorizer
-from sklearn.pipeline import make_pipeline
 import pickle
+
+from flask import Flask, request, jsonify
+
+from whereami import train_manual_data, predict_manual_data
 
 app = Flask(__name__)
 
-def train_manual_data(json_data, model_path=None):
-    data = json.loads(json_data)
-    label = data["name"]
-    aps = data["data"]
+@app.route("/train", methods=["POST"])
+def train_location():
+    try:
+        req_data = request.get_json()
+        name = req_data["name"]
+        data = req_data["data"]
 
-    X = []
-    y = []
-    for ap in aps:
-        X.append(ap)
-        y.append(label)
+        labels = [name]
+        train_data = [data]
 
-    clf = RandomForestClassifier(n_estimators=100, class_weight="balanced")
-    pipeline = make_pipeline(DictVectorizer(sparse=False), clf)
-    pipeline.fit(X, y)
+        model_path = "model.pkl"  # 모델 파일 경로를 지정하거나 None으로 설정하여 저장하지 않음
 
-    if model_path is not None:
-        with open(model_path, "wb") as f:
-            pickle.dump(pipeline, f)
+        model = train_manual_data(train_data, labels, model_path)
 
-    return pipeline
 
-def predict_manual_data(json_data, model_path):
-    data = json.loads(json_data)
-    aps = data["data"]
+        return jsonify({"message": "Training successful."})
 
-    with open(model_path, "rb") as f:
-        pipeline = pickle.load(f)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
-    results = pipeline.predict(aps)
-    return results
+@app.route("/predict", methods=["POST"])
+def predict_location():
+    try:
+        req_data = request.get_json()
+        data = req_data["data"]
 
-@app.route('/train', methods=['POST'])
-def train():
-    json_data = request.json
-    model_path = "model.pkl"
-    train_manual_data(json.dumps(json_data), model_path)
-    return "Model trained successfully."
+        model_path = "model.pkl"  # 모델 파일 경로를 지정합니다. 학습된 모델 파일의 경로여야 합니다.
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    json_data = request.json
-    model_path = "model.pkl"
-    predictions = predict_manual_data(json.dumps(json_data), model_path)
-    return jsonify(predictions.tolist())
+        results = predict_manual_data(data, model_path)
+        results_list = [arr.tolist() for arr in results]
 
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000)
+        return jsonify({"results": results_list})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+
+if __name__ == "__main__":
+    app.run()
