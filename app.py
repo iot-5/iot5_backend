@@ -41,14 +41,14 @@ def predict_manual_data(json_data, model_path):
 @app.route('/train', methods=['POST'])
 def train():
     json_data = request.json
-    model_path = "model.pkl"
+    model_path = "/root/project/iot5_backend/model.pkl"
     train_manual_data(json.dumps(json_data), model_path)
     return "Model trained successfully."
 
 @app.route('/predict', methods=['POST'])
 def predict():
     json_data = request.json
-    model_path = "model.pkl"
+    model_path = "/root/project/iot5_backend/model.pkl"
     predictions = predict_manual_data(json.dumps(json_data), model_path)
     return jsonify(predictions.tolist())
 
