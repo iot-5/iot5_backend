@@ -89,7 +89,7 @@ def train_model(path=None):
     model_file = get_model_file(path)
     X, y = get_train_data(path)
     if len(X) == 0:
-        lf = get_pipeline()
+        lp = get_pipeline()
         # raise ValueError("No wifi access points have been found during training")
 
 
