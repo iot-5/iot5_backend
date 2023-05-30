@@ -42,7 +42,6 @@ def get_train_data(folder=None):
     return X, y
 
 
-
 import time
 import json
 
@@ -60,8 +59,7 @@ def learn(label, n=1, device="", data=None):
     label_path = get_label_file(path, label + ".txt")
 
     new_sample = data
-    if new_sample:
-        write_data(label_path, new_sample)
+    write_data(label_path, new_sample)
 
     train_model()
 
@@ -163,7 +161,8 @@ class Predicter():
         self.wifi_scanner = get_scanner(device)
         self.predicted_value = None
 
-    def predict(self):
+    def predict(self, aps):
+        self.refresh()
         aps = self.wifi_scanner.get_access_points()
         self.predicted_value = self.clf.predict(aps_to_dict(aps))[0]
         return self.predicted_value
