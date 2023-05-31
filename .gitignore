@@ -152,3 +152,4 @@ cython_debug/
 #.idea/
 model.pkl
 .whereami/*
+.DS_Store
