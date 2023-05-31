@@ -1,32 +1,15 @@
 from sklearn.model_selection import cross_val_score
-
-import os
-import pickle
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.pipeline import make_pipeline
 
+import json
+from collections import Counter
+import os
+import pickle
 
 def aps_to_dict(aps):
     return {ap['ssid'] + " " + ap['bssid']: ap['quality'] for ap in aps}
-
-
-def sample(device=""):
-    wifi_scanner = get_scanner(device)
-    if not os.environ.get("PYTHON_ENV", False):
-        aps = wifi_scanner.get_access_points()
-    else:
-        aps = [{"quality": 100, "bssid": "XX:XX:XX:XX:XX:84",
-                "ssid": "X", "security": "XX"}]
-    return aps_to_dict(aps)
-
-
-def get_external_sample(path):
-    data = []
-    with open(os.path.join(path, "current.loc.txt")) as f:
-        for line in f:
-            data.append(json.loads(line))
-    return data
 
 
 def get_train_data(folder=None):
@@ -44,13 +27,6 @@ def get_train_data(folder=None):
             y.extend([fname.rstrip(".txt")] * len(data))
     return X, y
 
-
-
-
-import json
-from collections import Counter
-
-from access_points import get_scanner
 
 
 def write_data(label_path, data):
@@ -103,17 +79,6 @@ def get_model(path=None):
         lp = pickle.load(f)
     return lp
 
-def predict_proba(input_path=None, model_path=None, device=""):
-    lp = get_model(model_path)
-    data_sample = sample(device) if input_path is None else get_external_sample(input_path)
-    print(json.dumps(dict(zip(lp.classes_, lp.predict_proba(data_sample)[0]))))
-
-
-def predict(input_path=None, model_path=None, device=""):
-    lp = get_model(model_path)
-    data_sample = sample(device) if input_path is None else get_external_sample(input_path)
-    return lp.predict(data_sample)[0]
-
 
 def crossval(clf=None, X=None, y=None, folds=10, n=5, path=None):
     if X is None or y is None:
@@ -141,25 +106,6 @@ def locations(path=None):
         occurrences = Counter(y)
         for key, value in occurrences.items():
             print("{}: {}".format(key, value))
-
-
-class Predicter():
-    def __init__(self, model=None, device=""):
-        self.model = model
-        self.device = device
-        self.clf = get_model(model)
-        self.wifi_scanner = get_scanner(device)
-        self.predicted_value = None
-
-    def predict(self, aps):
-        self.refresh()
-        self.predicted_value = self.clf.predict(aps_to_dict(aps))[0]
-        return self.predicted_value
-
-    def refresh(self):
-        self.clf = get_model(self.model)
-        self.wifi_scanner = get_scanner(self.device)
-
 
 
 def get_whereami_path(path=None):
@@ -193,3 +139,20 @@ def rename_label(label, new_label, path=None):
     new_path = os.path.join(path, new_label + ".txt")
     os.rename(from_path, new_path)
     print("Renamed {} to {}".format(from_path, new_path))
+
+
+
+class Predicter():
+    def __init__(self, model=None):
+        self.model = model
+        self.clf = get_model(model)
+        self.predicted_value = None
+
+    def predict(self, aps):
+        self.refresh()
+        self.predicted_value = self.clf.predict(aps_to_dict(aps))[0]
+        return self.predicted_value
+
+    def refresh(self):
+        self.clf = get_model(self.model)
+
