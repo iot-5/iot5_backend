@@ -143,7 +143,7 @@ def show_on_image(astar_path):
     path_line = []
     for i in range(len(astar_path)):
         path_line.append(G.nodes[astar_path[i]]['pos'])
-    image_path = 'image.png'
+    image_path = 'jj.jpg'
     image = Image.open(image_path).convert('RGB')
     image_array = np.array(image)
     path_image = draw_path_on_image(image_array, path_line)
@@ -171,7 +171,7 @@ def result(start, end):
             x3, y3 = G.nodes[astar_path[i + 2]]['pos']
             distance1 = ueclidian_distance(x1, y1, x2, y2)
             angle, left = calculate_angle(x1, y1, x2, y2, x3, y3)
-            print(distance1*real_world_scale)
+            print(round(distance1*real_world_scale))
             if angle < 8:
                 continue
             if left:

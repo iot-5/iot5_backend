@@ -142,7 +142,7 @@ def show_on_image(astar_path):
     path_line = []
     for i in range(len(astar_path)):
         path_line.append(G.nodes[astar_path[i]]['pos'])
-    image_path = 'image.png'
+    image_path = 'jj.jpg'
     image = Image.open(image_path).convert('RGB')
     image_array = np.array(image)
     path_image = draw_path_on_image(image_array, path_line)
@@ -151,7 +151,6 @@ def show_on_image(astar_path):
 
 # rotatation = [{"left": 90}, {"right": 90}, {"left": 164}, {"right": 164}]
 # add rotation to the astar path
-
 
 
 def result(start, end):
@@ -172,7 +171,7 @@ def result(start, end):
             x3, y3 = G.nodes[astar_path[i + 2]]['pos']
             distance1 = ueclidian_distance(x1, y1, x2, y2)
             angle_deg, left = calculate_angle(x1, y1, x2, y2, x3, y3)
-            print(distance1 * real_world_scale)
+            print(round(distance1 * real_world_scale))
             if angle_deg is None or angle_deg < 8:
                 continue
             if left:
@@ -180,10 +179,12 @@ def result(start, end):
             else:
                 print(angle_deg, "right")
 
-
             distance2 = ueclidian_distance(x2, y2, x3, y3)
             # print(distance2)
-
+        last_room1 = astar_path[-2]
+        last_room2 = astar_path[-1]
+        print(round(ueclidian_distance(G.nodes[last_room1]['pos'][0], G.nodes[last_room1]['pos'][1],
+              G.nodes[last_room2]['pos'][0], G.nodes[last_room2]['pos'][1]) * real_world_scale))
     show_on_image(astar_path)
 
 
@@ -191,4 +192,3 @@ if __name__ == "__main__":
     start = int(input("Enter start room: "))
     end = int(input("Enter end room: "))
     result(start, end)
-
