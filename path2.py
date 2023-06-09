@@ -158,33 +158,39 @@ def result(start, end):
     real_world_scale = 0.04796469368
 
     astar_path = nx.astar_path(G, start, end)
-
+    distance = 0
+    final_path = []
     if len(astar_path) < 3:
         x1, y1 = G.nodes[astar_path[0]]['pos']
         x2, y2 = G.nodes[astar_path[1]]['pos']
         distance = ueclidian_distance(x1, y1, x2, y2)
-        print(round(distance * real_world_scale))
+        final_path.append(round(distance * real_world_scale))
     else:
         for i in range(len(astar_path) - 2):
             x1, y1 = G.nodes[astar_path[i]]['pos']
             x2, y2 = G.nodes[astar_path[i + 1]]['pos']
             x3, y3 = G.nodes[astar_path[i + 2]]['pos']
-            distance1 = ueclidian_distance(x1, y1, x2, y2)
-            angle_deg, left = calculate_angle(x1, y1, x2, y2, x3, y3)
-            print(round(distance1 * real_world_scale))
-            if angle_deg is None or angle_deg < 8:
-                continue
-            if left:
-                print(angle_deg, "left")
-            else:
-                print(angle_deg, "right")
 
-            distance2 = ueclidian_distance(x2, y2, x3, y3)
+            angle_deg, left = calculate_angle(x1, y1, x2, y2, x3, y3)
+            distance = ueclidian_distance(x1, y1, x2, y2)
+            final_path.append({"distance": round(distance * real_world_scale)})
+
+            if angle_deg is None:
+                continue
+
+            if left:
+                # print(angle_deg, "left")
+                final_path.append({"angle": angle_deg})
+            else:
+                # print(angle_deg, "right")
+                final_path.append({"angle": 360-angle_deg})
+
             # print(distance2)
         last_room1 = astar_path[-2]
         last_room2 = astar_path[-1]
-        print(round(ueclidian_distance(G.nodes[last_room1]['pos'][0], G.nodes[last_room1]['pos'][1],
-              G.nodes[last_room2]['pos'][0], G.nodes[last_room2]['pos'][1]) * real_world_scale))
+        final_path.append(round(ueclidian_distance(G.nodes[last_room1]['pos'][0], G.nodes[last_room1]['pos'][1],
+                                                   G.nodes[last_room2]['pos'][0], G.nodes[last_room2]['pos'][1]) * real_world_scale))
+        print(final_path)
     show_on_image(astar_path)
 
 
