@@ -153,5 +153,3 @@ cython_debug/
 model.pkl
 .whereami/*
 .DS_Store
-
-jj.jpg
