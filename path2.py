@@ -92,6 +92,20 @@ def add_edges_from_top_line(G, top_line_nodes):
         G.add_edge(node1, 8, weight=ueclidian_distance(x1, y1, 830, 200))
 
 
+def calculate_third_side_length(side1, side2, angle):
+    # Convert the angle to radians
+    angle_rad = math.radians(angle)
+
+    # Calculate the square of the third side length using the law of cosines
+    side3_squared = side1**2 + side2**2 - 2 * \
+        side1 * side2 * math.cos(angle_rad)
+
+    # Take the square root to get the actual length of the third side
+    side3 = math.sqrt(side3_squared)
+
+    return side3
+
+
 def set_nodes():
     check_point = [1, 2, 3, 4, 5, 6, 7, 8]
     # Read JSON file
@@ -188,10 +202,45 @@ def result(start, end):
             # print(distance2)
         last_room1 = astar_path[-2]
         last_room2 = astar_path[-1]
-        final_path.append(round(ueclidian_distance(G.nodes[last_room1]['pos'][0], G.nodes[last_room1]['pos'][1],
-                                                   G.nodes[last_room2]['pos'][0], G.nodes[last_room2]['pos'][1]) * real_world_scale))
-        print(final_path)
+        final_path.append({'distance': round(ueclidian_distance(G.nodes[last_room1]['pos'][0], G.nodes[last_room1]['pos'][1],
+                                                                G.nodes[last_room2]['pos'][0], G.nodes[last_room2]['pos'][1]) * real_world_scale)})
+
     show_on_image(astar_path)
+    # print(final_path)
+    for i in range(len(final_path)):
+        if 'angle' in final_path[i]:
+            # print(i['angle'])
+            if final_path[i]['angle'] < 10:
+                final_path[i] = {"distance": round(calculate_third_side_length(
+                    final_path[i-1]['distance'], final_path[i+1]['distance'], 180-final_path[i]['angle']))}
+                final_path[i-1] = {'distance': 0}
+                final_path[i+1] = {'distance': 0}
+                i = i+1
+
+    # delete {"distance": 0} in list, but don't touch "angle"
+
+    final_path = [i for i in final_path if i.get(
+        'distance', 0) != 0 or i.get('angle', 0) != 0]
+    merged_data = []
+
+    current_distance = None
+
+    for item in final_path:
+        if 'distance' in item:
+            distance_value = item['distance']
+            if current_distance is None:
+                current_distance = distance_value
+            else:
+                current_distance += distance_value
+        else:
+            if current_distance is not None:
+                merged_data.append({'distance': current_distance})
+                current_distance = None
+            merged_data.append(item)
+
+    if current_distance is not None:
+        merged_data.append({'distance': current_distance})
+    print(merged_data)
 
 
 if __name__ == "__main__":
