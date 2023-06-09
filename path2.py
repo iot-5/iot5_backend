@@ -170,10 +170,17 @@ def show_on_image(astar_path):
 def result(start, end):
     set_nodes()
     real_world_scale = 0.04796469368
-
+    initial_way_elevator = 0
     astar_path = nx.astar_path(G, start, end)
     distance = 0
     final_path = []
+    if (G.nodes[astar_path[0]]['pos'][1] < G.nodes[astar_path[1]]['pos'][1]):
+        initial_way_elevator = 1
+    elif (G.nodes[astar_path[0]]['pos'][1] > G.nodes[astar_path[1]]['pos'][1]):
+        initial_way_elevator = 0
+    else:
+        initial_way_elevator = 2
+
     if len(astar_path) < 3:
         x1, y1 = G.nodes[astar_path[0]]['pos']
         x2, y2 = G.nodes[astar_path[1]]['pos']
@@ -241,9 +248,20 @@ def result(start, end):
     if current_distance is not None:
         merged_data.append({'distance': current_distance})
     print(merged_data)
+    print(initial_way_elevator)
+    return merged_data, initial_way_elevator
 
 
 if __name__ == "__main__":
     start = int(input("Enter start room: "))
     end = int(input("Enter end room: "))
-    result(start, end)
+    final_path, initial_pos = result(start, end)
+    if initial_pos == 0:
+        # "엘리베이터쪽 방향을 바라봐주십쇼" to english
+        print("Please face the elevator")
+
+    elif initial_pos == 1:
+        print("엘리베이터쪽 반대 방향을 바라봐주십쇼")
+    else:
+        print("방을 등지고 바라봐주십쇼")
+    print(final_path)
