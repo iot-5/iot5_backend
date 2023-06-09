@@ -253,8 +253,8 @@ def result(start, end):
 
 
 if __name__ == "__main__":
-    start = int(input("Enter start room: "))
-    end = int(input("Enter end room: "))
+    start = float(input("Enter start room: "))
+    end = float(input("Enter end room: "))
     final_path, initial_pos = result(start, end)
     if initial_pos == 0:
         # "엘리베이터쪽 방향을 바라봐주십쇼" to english
