@@ -338,9 +338,9 @@ if __name__ == "__main__":
     end = float(input("Enter end room: "))
     final_path, initial_pos = result(start, end)
     if initial_pos == 0:
-        start_direct = "Left"
+        start_direct = "left"
     elif initial_pos == 1:
-        start_direct = "Right"
+        start_direct = "right"
     else:
         start_direct = "None-개발중"
     print(start_direct)

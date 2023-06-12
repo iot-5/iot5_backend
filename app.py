@@ -35,9 +35,9 @@ def find_path():
     end = data['end']
     final_path, initial_pos = result_cli(start, end)
     if initial_pos == 0:
-        start_direct = "Left"
+        start_direct = "left"
     elif initial_pos == 1:
-        start_direct = "Right"
+        start_direct = "right"
     else:
         start_direct = "None-개발중"
 
