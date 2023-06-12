@@ -338,11 +338,10 @@ if __name__ == "__main__":
     end = float(input("Enter end room: "))
     final_path, initial_pos = result(start, end)
     if initial_pos == 0:
-        # "엘리베이터쪽 방향을 바라봐주십쇼" to english
-        print("Please face the elevator")
-
+        start_direct = "Left"
     elif initial_pos == 1:
-        print("엘리베이터쪽 반대 방향을 바라봐주십쇼")
+        start_direct = "Right"
     else:
-        print("방을 등지고 바라봐주십쇼")
+        start_direct = "None-개발중"
+    print(start_direct)
     print(final_path)
