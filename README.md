@@ -72,3 +72,52 @@
 
     {"location":"p3"}
 
+
+
+## Find Path
+
+### Request
+
+`POST /path`
+
+
+{
+    "start": 출발지점 (float),
+    "end": 도착지점
+}
+#### example
+{
+    "start": 416,
+    "end": 406
+}
+
+
+### Response
+
+{
+    "path": [
+        {
+            "distance": 36
+        },
+        {
+            "angle": 90.0
+        },
+        {
+            "distance": 23
+        },
+        {
+            "angle": 302.2756443145776
+        },
+        {
+            "distance": 4
+        },
+        {
+            "angle": 342.31327441829706
+        },
+        {
+            "distance": 4
+        }
+    ],
+    "start_direction": "Right"
+}
+
