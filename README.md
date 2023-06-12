@@ -94,6 +94,14 @@
 
 ### Response
 
+
+
+{
+    "path": [] distance => 거리, angle => 회전각
+    "start_direction": "right" or "left" or 개발중 - "top" or "bottom"
+}
+
+#### example
 {
     "path": [
         {
@@ -118,6 +126,6 @@
             "distance": 4
         }
     ],
-    "start_direction": "Right"
+    "start_direction": "right"
 }
 
