@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 
+from path2 import result_cli
 from whereami import *
 
 app = Flask(__name__)
@@ -27,6 +28,24 @@ def predict():
     location = predicter.predict(aps)
     return jsonify({"location": location})
 
+@app.route('/path', methods=['POST'])
+def find_path():
+    data = request.get_json()
+    start = data['start']
+    end = data['end']
+    final_path, initial_pos = result_cli(start, end)
+    if initial_pos == 0:
+        start_direct = "Left"
+    elif initial_pos == 1:
+        start_direct = "Right"
+    else:
+        start_direct = "None-개발중"
+
+    response = {
+        "start_direction": start_direct,
+        "path": final_path
+    }
+    return jsonify(response)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

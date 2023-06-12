@@ -156,7 +156,7 @@ def show_on_image(astar_path):
     path_line = []
     for i in range(len(astar_path)):
         path_line.append(G.nodes[astar_path[i]]['pos'])
-    image_path = 'jj.jpg'
+    image_path = 'jj.png'
     image = Image.open(image_path).convert('RGB')
     image_array = np.array(image)
     path_image = draw_path_on_image(image_array, path_line)
@@ -249,6 +249,87 @@ def result(start, end):
         merged_data.append({'distance': current_distance})
     print(merged_data)
     print(initial_way_elevator)
+    return merged_data, initial_way_elevator
+
+def result_cli(start, end):
+    set_nodes()
+    real_world_scale = 0.04796469368
+    initial_way_elevator = 0
+    astar_path = nx.astar_path(G, start, end)
+    distance = 0
+    final_path = []
+    if (G.nodes[astar_path[0]]['pos'][1] < G.nodes[astar_path[1]]['pos'][1]):
+        initial_way_elevator = 1
+    elif (G.nodes[astar_path[0]]['pos'][1] > G.nodes[astar_path[1]]['pos'][1]):
+        initial_way_elevator = 0
+    else:
+        initial_way_elevator = 2
+
+    if len(astar_path) < 3:
+        x1, y1 = G.nodes[astar_path[0]]['pos']
+        x2, y2 = G.nodes[astar_path[1]]['pos']
+        distance = ueclidian_distance(x1, y1, x2, y2)
+        final_path.append(round(distance * real_world_scale))
+    else:
+        for i in range(len(astar_path) - 2):
+            x1, y1 = G.nodes[astar_path[i]]['pos']
+            x2, y2 = G.nodes[astar_path[i + 1]]['pos']
+            x3, y3 = G.nodes[astar_path[i + 2]]['pos']
+
+            angle_deg, left = calculate_angle(x1, y1, x2, y2, x3, y3)
+            distance = ueclidian_distance(x1, y1, x2, y2)
+            final_path.append({"distance": round(distance * real_world_scale)})
+
+            if angle_deg is None:
+                continue
+
+            if left:
+                # print(angle_deg, "left")
+                final_path.append({"angle": angle_deg})
+            else:
+                # print(angle_deg, "right")
+                final_path.append({"angle": 360-angle_deg})
+
+            # print(distance2)
+        last_room1 = astar_path[-2]
+        last_room2 = astar_path[-1]
+        final_path.append({'distance': round(ueclidian_distance(G.nodes[last_room1]['pos'][0], G.nodes[last_room1]['pos'][1],
+                                                                G.nodes[last_room2]['pos'][0], G.nodes[last_room2]['pos'][1]) * real_world_scale)})
+
+    # print(final_path)
+    for i in range(len(final_path)):
+        if 'angle' in final_path[i]:
+            # print(i['angle'])
+            if final_path[i]['angle'] < 10:
+                final_path[i] = {"distance": round(calculate_third_side_length(
+                    final_path[i-1]['distance'], final_path[i+1]['distance'], 180-final_path[i]['angle']))}
+                final_path[i-1] = {'distance': 0}
+                final_path[i+1] = {'distance': 0}
+                i = i+1
+
+    # delete {"distance": 0} in list, but don't touch "angle"
+
+    final_path = [i for i in final_path if i.get(
+        'distance', 0) != 0 or i.get('angle', 0) != 0]
+    merged_data = []
+
+    current_distance = None
+
+    for item in final_path:
+        if 'distance' in item:
+            distance_value = item['distance']
+            if current_distance is None:
+                current_distance = distance_value
+            else:
+                current_distance += distance_value
+        else:
+            if current_distance is not None:
+                merged_data.append({'distance': current_distance})
+                current_distance = None
+            merged_data.append(item)
+
+    if current_distance is not None:
+        merged_data.append({'distance': current_distance})
     return merged_data, initial_way_elevator
 
 
