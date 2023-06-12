@@ -90,13 +90,14 @@
 
 
 {
-    "start": 출발지점 (float),<br>
+    "start": 출발지점 (string),<br>
     "end": 도착지점
 }
 #### example
+
 {
-    "start": 416,
-    "end": 406
+    "start": "416",
+    "end": "406"
 }
 
 
