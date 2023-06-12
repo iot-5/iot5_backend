@@ -47,5 +47,20 @@ def find_path():
     }
     return jsonify(response)
 
+@app.route('/locations', methods=['GET'])
+def get_locations():
+    folder_path = ensure_whereami_path()
+    location_list = []
+
+    for file_name in os.listdir(folder_path):
+        if file_name.endswith('.txt'):
+            location_list.append(file_name.replace('.txt', ''))
+
+    response = {
+        'locations': location_list
+    }
+    return jsonify(response)
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
