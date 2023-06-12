@@ -334,8 +334,8 @@ def result_cli(start, end):
 
 
 if __name__ == "__main__":
-    start = float(input("Enter start room: "))
-    end = float(input("Enter end room: "))
+    start = (input("Enter start room: "))
+    end = (input("Enter end room: "))
     final_path, initial_pos = result(start, end)
     if initial_pos == 0:
         start_direct = "left"
