@@ -120,6 +120,20 @@ def set_nodes():
     G.add_node(6, pos=(680, 735))
     G.add_node(7, pos=(900, 200))
     G.add_node(8, pos=(830, 200))
+
+    # 엘베 근처노드
+    G.add_node(9, pos=(843, 710))  # 5,6라인
+    G.add_node(10, pos=(773, 710))  # 5,6라인
+    G.add_node(11, pos=(800, 1635))  # 3,4라인
+    G.add_node(12, pos=(800, 1855))  # 1,2라인
+
+    # 엘베노드
+    G.add_node(101, pos=(834, 155))  # 1번엘베 8번노드연결
+    G.add_node(102, pos=(845, 710))  # 2번엘베 9번노드연결
+    G.add_node(103, pos=(776, 710))  # 3번엘베 10번노드연결
+    G.add_node(104, pos=(801, 1696))  # 4번엘베 11번노드연결
+    G.add_node(105, pos=(800, 1775))  # 5번엘베 12번노드연결
+
     G.add_edge(1, 2, weight=ueclidian_distance(900, 1855, 370, 1855))
     G.add_edge(3, 4, weight=ueclidian_distance(900, 1635, 430, 1635))
     G.add_edge(5, 6, weight=ueclidian_distance(900, 735, 680, 735))
@@ -130,6 +144,24 @@ def set_nodes():
     G.add_edge(2, 4, weight=ueclidian_distance(370, 1855, 430, 1635))
     G.add_edge(4, 6, weight=ueclidian_distance(430, 1635, 680, 735))
     G.add_edge(6, 8, weight=ueclidian_distance(680, 735, 830, 200))
+
+    # 엘베노드 연결
+    G.add_edge(5, 9, weight=ueclidian_distance(900, 735, 843, 735))
+    G.add_edge(6, 9, weight=ueclidian_distance(680, 735, 843, 735))
+    G.add_edge(5, 10, weight=ueclidian_distance(900, 735, 773, 735))
+    G.add_edge(6, 10, weight=ueclidian_distance(680, 735, 773, 735))
+    G.add_edge(3, 11, weight=ueclidian_distance(900, 1635, 790, 1635))
+    G.add_edge(4, 11, weight=ueclidian_distance(430, 1635, 790, 1635))
+    G.add_edge(1, 12, weight=ueclidian_distance(900, 1855, 790, 1855))
+    G.add_edge(2, 12, weight=ueclidian_distance(370, 1855, 790, 1855))
+
+    G.add_edge(101, 8, weight=ueclidian_distance(834, 155, 830, 200))
+    G.add_edge(102, 9, weight=ueclidian_distance(845, 708, 843, 735))
+    G.add_edge(103, 10, weight=ueclidian_distance(776, 712, 773, 735))
+    G.add_edge(104, 11, weight=ueclidian_distance(801, 1696, 790, 1635))
+    G.add_edge(105, 12, weight=ueclidian_distance(800, 1775, 790, 1855))
+    G.add_edge(102, 103, weight=ueclidian_distance(845, 708, 776, 712))
+    G.add_edge(104, 105, weight=ueclidian_distance(801, 1696, 800, 1775))
     # Add nodes to the graph
     for room in data['rooms']:
         room_id = room['name']
@@ -142,13 +174,18 @@ def set_nodes():
                          for room in data['rooms'] if room.get('bottom', 0) == 0]
     top_line_nodes = [room['name']
                       for room in data['rooms'] if room.get('bottom', 0) == 1]
-
+    elevator_nodes = [room['name']
+                      for room in data['rooms'] if room.get('bottom', 2) == 1]
     add_edges_from_bottom_line(G, bottom_line_nodes)
     add_edges_from_top_line(G, top_line_nodes)
 
     # add edge in reverse direction
     for node1, node2 in G.edges():
         G.add_edge(node2, node1, weight=G[node1][node2][0]['weight'])
+
+    # show all edges in the graph
+    for node1, node2 in G.edges():
+        print(node1, node2, G[node1][node2][0]['weight'])
 
 
 def show_on_image(astar_path):
@@ -172,6 +209,7 @@ def result(start, end):
     real_world_scale = 0.04796469368
     initial_way_elevator = 0
     astar_path = nx.astar_path(G, start, end)
+    print(astar_path)
     distance = 0
     final_path = []
     if (G.nodes[astar_path[0]]['pos'][1] < G.nodes[astar_path[1]]['pos'][1]):
@@ -217,7 +255,7 @@ def result(start, end):
     for i in range(len(final_path)):
         if 'angle' in final_path[i]:
             # print(i['angle'])
-            if final_path[i]['angle'] < 10:
+            if final_path[i]['angle'] < 10 or final_path[i]['angle'] > 350:
                 final_path[i] = {"distance": round(calculate_third_side_length(
                     final_path[i-1]['distance'], final_path[i+1]['distance'], 180-final_path[i]['angle']))}
                 final_path[i-1] = {'distance': 0}
