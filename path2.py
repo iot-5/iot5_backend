@@ -49,13 +49,22 @@ def calculate_angle(x1, y1, x2, y2, x3, y3):
 
 def draw_path_on_image(image_array, path):
     path_image = Image.fromarray(image_array)
-
     draw = ImageDraw.Draw(path_image)
 
+    # Draw the path as a thick red line
     for i in range(len(path) - 1):
         x1, y1 = path[i]
-        x2, y2 = path[i+1]
-        draw.line((y1, x1, y2, x2), fill=(255, 0, 0), width=3)
+        x2, y2 = path[i + 1]
+        draw.line((y1, x1, y2, x2), fill=(255, 0, 0), width=10)
+
+    # Draw blue circles at the start and end points
+    start_x, start_y = path[0]
+    end_x, end_y = path[-1]
+    radius = 15
+    draw.ellipse((start_y - radius, start_x - radius, start_y +
+                 radius, start_x + radius), fill=(0, 0, 255))
+    draw.ellipse((end_y - radius, end_x - radius, end_y +
+                 radius, end_x + radius), fill=(0, 0, 255))
 
     return path_image
 
@@ -239,6 +248,8 @@ def show_on_image(astar_path):
     image_array = np.array(image)
     path_image = draw_path_on_image(image_array, path_line)
     path_image.show()
+    # save image
+    path_image.save('path_image.png')
 
 
 # rotatation = [{"left": 90}, {"right": 90}, {"left": 164}, {"right": 164}]
