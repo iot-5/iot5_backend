@@ -1,3 +1,6 @@
+import base64
+from io import BytesIO
+
 from flask import Flask, request, jsonify
 
 from path2 import *
@@ -39,7 +42,7 @@ def find_path():
     data = request.get_json()
     start = data['start']
     end = data['end']
-    final_path, initial_pos = result_cli(start, end)
+    final_path, initial_pos, astar_path = result_backend(start, end)
     if initial_pos == 0:
         start_direct = "left"
     elif initial_pos == 1:
@@ -47,11 +50,14 @@ def find_path():
     else:
         start_direct = "None-개발중"
 
+    path_image = show_on_image(astar_path)
+
     response = {
         "start_direction": start_direct,
-        "path": final_path
+        "path": final_path,
+        "image": path_image,
     }
-    return jsonify(response)
+    return jsonify(response), {'Content-Type': 'image/png'}
 
 @app.route('/locations', methods=['GET'])
 def get_locations():

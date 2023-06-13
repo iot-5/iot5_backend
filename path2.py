@@ -1,3 +1,5 @@
+import base64
+
 import networkx as nx
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw
@@ -250,6 +252,10 @@ def show_on_image(astar_path):
     path_image.show()
     # save image
     path_image.save('path_image.png')
+    with open('path_image.png', 'rb') as image_file:
+        encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
+
+    return encoded_image
 
 
 # rotatation = [{"left": 90}, {"right": 90}, {"left": 164}, {"right": 164}]
@@ -343,7 +349,7 @@ def result(start, end):
     return merged_data, initial_way_elevator
 
 
-def result_cli(start, end):
+def result_backend(start, end):
     real_world_scale = 0.04796469368
     initial_way_elevator = 0
     astar_path = nx.astar_path(G, start, end)
@@ -421,7 +427,7 @@ def result_cli(start, end):
 
     if current_distance is not None:
         merged_data.append({'distance': current_distance})
-    return merged_data, initial_way_elevator
+    return merged_data, initial_way_elevator, astar_path
 
 
 if __name__ == "__main__":
