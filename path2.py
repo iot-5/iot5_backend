@@ -1,4 +1,7 @@
 import base64
+import os
+import platform
+import time
 
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -249,11 +252,24 @@ def show_on_image(astar_path):
     image = Image.open(image_path).convert('RGB')
     image_array = np.array(image)
     path_image = draw_path_on_image(image_array, path_line)
-    path_image.show()
-    # save image
-    path_image.save('path_image.png')
-    with open('path_image.png', 'rb') as image_file:
+
+    if not platform.system() == 'Linux':
+        path_image.show()
+
+    # Save image with a unique filename
+    filename = f'path_image_{int(time.time())}.png'
+    path_image.save(filename)
+
+    # Wait for the image to be saved
+    while not os.path.exists(filename):
+        time.sleep(0.1)
+
+    # Encode the saved image to base64
+    with open(filename, 'rb') as image_file:
         encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
+
+    # Remove the temporary image file
+    os.remove(filename)
 
     return encoded_image
 

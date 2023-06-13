@@ -57,7 +57,8 @@ def find_path():
         "path": final_path,
         "image": path_image,
     }
-    return jsonify(response), {'Content-Type': 'image/png'}
+
+    return jsonify(response)
 
 @app.route('/locations', methods=['GET'])
 def get_locations():
