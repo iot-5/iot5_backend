@@ -62,9 +62,9 @@ def draw_path_on_image(image_array, path):
     end_x, end_y = path[-1]
     radius = 15
     draw.ellipse((start_y - radius, start_x - radius, start_y +
-                 radius, start_x + radius), fill=(0, 0, 255))
+                 radius, start_x + radius), fill=(40, 152, 255))
     draw.ellipse((end_y - radius, end_x - radius, end_y +
-                 radius, end_x + radius), fill=(0, 0, 255))
+                 radius, end_x + radius), fill=(40, 152, 255))
 
     return path_image
 
