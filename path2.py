@@ -111,7 +111,7 @@ def calculate_third_side_length(side1, side2, angle):
 def set_nodes():
     check_point = [1, 2, 3, 4, 5, 6, 7, 8]
     # Read JSON file
-    with open('rooms.json', 'r') as f:
+    with open('rooms_4.json', 'r') as f:
         data = json.load(f)
 
     G.add_node("1", pos=(909, 1882.5))
