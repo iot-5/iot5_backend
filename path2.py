@@ -138,44 +138,70 @@ def set_nodes():
         409.3, 1633.25, 667.29, 739.5))
     G.add_edge("6", "8", weight=ueclidian_distance(667.29, 739.5, 828.5, 181))
 
-    # 엘베 근처노드
-    G.add_node("9", pos=(835, 739.5))  # 5,6라인
-    G.add_node("10", pos=(790.69, 739.5))  # 5,6라인
-    G.add_node("11", pos=(790.69, 1633.25))  # 3,4라인
-    G.add_node("12", pos=(790.69, 1882.5))  # 1,2라인
+    G.add_node("테라스", pos=(828.5, 794))
+    G.add_node("테라스_1", pos=(828.5, 739.5))  # 5,6 라인
 
-    G.add_edge("5", "9", weight=ueclidian_distance(909, 739.5, 835, 739.5))
-    G.add_edge("6", "9", weight=ueclidian_distance(667.29, 739.5, 835, 739.5))
-    G.add_edge("5", "10", weight=ueclidian_distance(909, 739.5, 790.69, 739.5))
-    G.add_edge("6", "10", weight=ueclidian_distance(
+    G.add_edge("테라스", "테라스_1", weight=ueclidian_distance(
+        828.5, 794, 828.5, 739.5))
+    G.add_edge("테라스_1", "6", weight=ueclidian_distance(
+        828.5, 739.5, 667.29, 739.5))
+    G.add_edge("테라스_1", "5", weight=ueclidian_distance(
+        828.5, 739.5, 909, 739.5))
+
+    # 엘베 근처노드
+    # G.add_node("9", pos=(835, 739.5))  # 5,6라인
+    G.add_node("테라스 앞 엘베", pos=(790.69, 739.5))  # 5,6라인
+
+    # G.add_edge("5", "9", weight=ueclidian_distance(909, 739.5, 835, 739.5))
+    # G.add_edge("6", "9", weight=ueclidian_distance(667.29, 739.5, 835, 739.5))
+    G.add_edge("5", "테라스 앞 엘베", weight=ueclidian_distance(
+        909, 739.5, 790.69, 739.5))
+    G.add_edge("6", "테라스 앞 엘베", weight=ueclidian_distance(
         667.29, 739.5, 790.69, 739.5))
-    G.add_edge("3", "11", weight=ueclidian_distance(
-        909, 1633.25, 790.69, 1633.25))
-    G.add_edge("4", "11", weight=ueclidian_distance(
-        409.3, 1633.25, 790.69, 1633.25))
-    G.add_edge("1", "12", weight=ueclidian_distance(
-        909, 1882.5, 790.69, 1882.5))
-    G.add_edge("2", "12", weight=ueclidian_distance(
-        338, 1882.5, 790.69, 1882.5))
+    # G.add_edge("3", "11", weight=ueclidian_distance(
+    #     909, 1633.25, 790.69, 1633.25))
+    # G.add_edge("4", "11", weight=ueclidian_distance(
+    #     409.3, 1633.25, 790.69, 1633.25))
+    # G.add_edge("1", "12", weight=ueclidian_distance(
+    #     909, 1882.5, 790.69, 1882.5))
+    # G.add_edge("2", "12", weight=ueclidian_distance(
+    #     338, 1882.5, 790.69, 1882.5))
+    G.add_node("게시판 앞 엘베", pos=(790.69, 1731.25))
+    G.add_node("게시판 앞 엘베_1", pos=(790.69, 1633.25))  # 3,4라인
+    G.add_node("게시판 앞 엘베_2", pos=(790.69, 1882.5))  # 1,2라인
+
+    G.add_edge("게시판 앞 엘베", "게시판 앞 엘베_1", weight=ueclidian_distance(
+        1731.25, 790.69, 790.69, 1633.25))
+    G.add_edge("게시판 앞 엘베", "게시판 앞 엘베_2", weight=ueclidian_distance(
+        1731.25, 790.69, 790.69, 1882.5))
+
+    G.add_edge("게시판 앞 엘베_1", "3", weight=ueclidian_distance(
+        790.69, 1633.25, 909, 1633.25))
+    G.add_edge("게시판 앞 엘베_1", "4", weight=ueclidian_distance(
+        790.69, 1633.25, 409.3, 1633.25))
+    G.add_edge("게시판 앞 엘베_2", "1", weight=ueclidian_distance(
+        790.69, 1882.5, 909, 1882.5))
+    G.add_edge("게시판 앞 엘베_2", "2", weight=ueclidian_distance(
+        790.69, 1882.5, 338, 1882.5))
 
     # 엘베노드
-    G.add_node("101", pos=(828.5, 146.5))  # 1번엘베 8번노드연결
-    G.add_node("102", pos=(845, 691))  # 2번엘베 9번노드연결
-    G.add_node("103", pos=(790.69, 691))  # 3번엘베 10번노드연결
-    G.add_node("104", pos=(790.69, 1692.5))  # 4번엘베 11번노드연결
-    G.add_node("105", pos=(790.69, 1770))  # 5번엘베 12번노드연결
+    # G.add_node("101", pos=(828.5, 146.5))  # 1번엘베 8번노드연결
+    # G.add_node("102", pos=(845, 691))  # 2번엘베 9번노드연결
+    # G.add_node("103", pos=(790.69, 691))  # 3번엘베 10번노드연결
+    # G.add_node("104", pos=(790.69, 1692.5))  # 4번엘베 11번노드연결
+    # G.add_node("105", pos=(790.69, 1770))  # 5번엘베 12번노드연결
 
-    G.add_edge("8", "101", weight=ueclidian_distance(828.5, 181, 828.5, 146.5))
-    G.add_edge("9", "102", weight=ueclidian_distance(835, 739.5, 845, 691))
-    G.add_edge("10", "103", weight=ueclidian_distance(
-        790.69, 739.5, 790.69, 691))
-    G.add_edge("11", "104", weight=ueclidian_distance(
-        790.69, 1633.25, 790.69, 1692.5))
-    G.add_edge("12", 105, weight=ueclidian_distance(
-        790.69, 1882.5, 790.69, 1770))
-    G.add_edge("102", "103", weight=ueclidian_distance(845, 691, 790.69, 691))
-    G.add_edge("104", "105", weight=ueclidian_distance(
-        790.69, 1692.5, 790.69, 1770))
+    # G.add_edge("8", "101", weight=ueclidian_distance(828.5, 181, 828.5, 146.5))
+    # G.add_edge("9", "102", weight=ueclidian_distance(835, 739.5, 845, 691))
+    # G.add_edge("10", "103", weight=ueclidian_distance(
+    #     790.69, 739.5, 790.69, 691))
+    # G.add_edge("11", "104", weight=ueclidian_distance(
+    #     790.69, 1633.25, 790.69, 1692.5))
+    # G.add_edge("12", 105, weight=ueclidian_distance(
+    #     790.69, 1882.5, 790.69, 1770))
+    # G.add_edge("102", "103", weight=ueclidian_distance(845, 691, 790.69, 691))
+    # G.add_edge("104", "105", weight=ueclidian_distance(
+    #     790.69, 1692.5, 790.69, 1770))
 
     # Add nodes to the graph
     for room in data['rooms']:
@@ -391,6 +417,8 @@ def result_cli(start, end):
 if __name__ == "__main__":
     start = (input("Enter start room: "))
     end = (input("Enter end room: "))
+    if start == "아르테크네":
+        start = "7"
     final_path, initial_pos = result(start, end)
     if initial_pos == 0:
         start_direct = "left"
