@@ -195,7 +195,7 @@ def set_nodes():
     add_edges_from_top_line(G, top_line_nodes)
 
     # add edge in reverse direction
-    for node1, node2 in G.edges():
+    for node1, node2 in list(G.edges()):
         G.add_edge(node2, node1, weight=G[node1][node2][0]['weight'])
 
     # # show all edges in the graph
