@@ -247,7 +247,7 @@ def show_on_image(astar_path):
 
 def result(start, end):
     set_nodes()
-    print(G.edges())
+    print(list(G.edges()))
     real_world_scale = 0.04796469368
     initial_way_elevator = 0
     astar_path = nx.astar_path(G, start, end)
@@ -333,7 +333,6 @@ def result(start, end):
 
 
 def result_cli(start, end):
-    set_nodes()
     real_world_scale = 0.04796469368
     initial_way_elevator = 0
     astar_path = nx.astar_path(G, start, end)

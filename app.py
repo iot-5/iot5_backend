@@ -1,7 +1,13 @@
 from flask import Flask, request, jsonify
 
-from path2 import result_cli
+from path2 import *
+from path3 import set_nodes as set_nodes_5
 from whereami import *
+
+
+# Set G on initial
+set_nodes_5()
+set_nodes()
 
 app = Flask(__name__)
 
