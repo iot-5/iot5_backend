@@ -65,11 +65,35 @@ def draw_path_on_image(image_array, path):
     # Draw blue circles at the start and end points
     start_x, start_y = path[0]
     end_x, end_y = path[-1]
-    radius = 15
+    radius = 10
     draw.ellipse((start_y - radius, start_x - radius, start_y +
                  radius, start_x + radius), fill=(40, 152, 255))
-    draw.ellipse((end_y - radius, end_x - radius, end_y +
-                 radius, end_x + radius), fill=(40, 152, 255))
+    # draw.ellipse((end_y - radius, end_x - radius, end_y +
+    #              radius, end_x + radius), fill=(40, 152, 255))
+
+    # Load the marker image
+    marker_image_path = "marker2.png"
+    marker_image = Image.open(marker_image_path).convert("RGBA")
+
+    marker_width, marker_height = marker_image.size
+    new_width = int(marker_width * 0.5)
+    new_height = int(marker_height * 0.5)
+    marker_image = marker_image.resize((new_width, new_height))
+
+    # Calculate the marker position
+    dest_x, dest_y = path[-1]
+    marker_x = int(dest_x - new_width-10)
+    marker_y = int(dest_y - new_height/3)
+    # Paste the marker image onto the path image
+    path_image.paste(marker_image, (marker_y, marker_x), marker_image)
+
+    # Draw destination name below the marker
+    # Choose the desired font and size
+    # font = ImageFont.truetype("arial.ttf", 16)
+    # text_width, text_height = draw.textsize(destination_name)
+    # text_x = dest_x + radius - text_width // 2
+    # text_y = dest_y + radius + 5
+    # draw.text((text_y, text_x), destination_name, fill=(0, 0, 0))
 
     return path_image
 
@@ -259,7 +283,6 @@ def show_on_image(astar_path):
     # Save image with a unique filename
     filename = f'path_image_{int(time.time())}.png'
     path_image.save(filename)
-
     # Wait for the image to be saved
     while not os.path.exists(filename):
         time.sleep(0.1)
@@ -280,7 +303,7 @@ def show_on_image(astar_path):
 
 def result(start, end):
     set_nodes()
-    print(list(G.edges()))
+    # print(list(G.edges()))
     real_world_scale = 0.04796469368
     initial_way_elevator = 0
     astar_path = nx.astar_path(G, start, end)
@@ -326,7 +349,7 @@ def result(start, end):
                                                                 G.nodes[last_room2]['pos'][0], G.nodes[last_room2]['pos'][1]) * real_world_scale)})
 
     show_on_image(astar_path)
-    print("ff: ", final_path)
+    # print("ff: ", final_path)
     # for i in range(len(final_path)):
     #     if 'angle' in final_path[i]:
     #         # print(i['angle'])
@@ -360,7 +383,7 @@ def result(start, end):
 
     if current_distance is not None:
         merged_data.append({'distance': current_distance})
-    print(merged_data)
+    # print(merged_data)
     print(initial_way_elevator)
     return merged_data, initial_way_elevator
 
