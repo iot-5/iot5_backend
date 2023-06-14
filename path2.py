@@ -5,7 +5,7 @@ import time
 
 import networkx as nx
 import matplotlib.pyplot as plt
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 import json
 import math
@@ -456,7 +456,7 @@ def result_backend(start, end):
         x1, y1 = G.nodes[astar_path[0]]['pos']
         x2, y2 = G.nodes[astar_path[1]]['pos']
         distance = ueclidian_distance(x1, y1, x2, y2)
-        final_path.append(round(distance * real_world_scale))
+        final_path.append({"distance": round(distance * real_world_scale)})
     else:
         for i in range(len(astar_path) - 2):
             x1, y1 = G.nodes[astar_path[i]]['pos']
@@ -520,31 +520,72 @@ def result_backend(start, end):
     return merged_data, initial_way_elevator, astar_path, initial_angle + real_world_angle
 
 
+def arrived_image(final_node):
+
+    image_path = '4th.png'
+    image = Image.open(image_path).convert("RGBA")
+    image_array = np.array(image)
+    path_image = Image.fromarray(image_array)
+    draw = ImageDraw.Draw(path_image)
+    final_x, final_y = G.nodes[final_node]['pos']
+    print(final_x, final_y)
+    marker_image_path = "arrived.png"
+    marker_image = Image.open(marker_image_path).convert("RGBA")
+
+    marker_width, marker_height = marker_image.size
+    print(marker_width, marker_height)
+    new_width = int(marker_width * 0.2)
+    new_height = int(marker_height * 0.2)
+    marker_image = marker_image.resize((new_width, new_height))
+
+    marker_x = int(final_x - new_width)
+    marker_y = int(final_y - new_height+30)
+    print(marker_x, marker_y)
+    path_image.paste(marker_image, (marker_y, marker_x), marker_image)
+    radius = 10
+    destination_name = "Arrived!"
+
+    text_font = ImageFont.truetype("arial.ttf", 100)
+    text_width, text_height = draw.textsize(destination_name, font=text_font)
+    text_x = final_x + radius - text_width // 2
+    text_y = final_y + radius + 5
+    draw.text((text_y, text_x), destination_name,
+              fill=(40, 152, 255), font=text_font)
+    path_image.show()
+    return path_image
+
+
 if __name__ == "__main__":
     start = (input("Enter start room: "))
     end = (input("Enter end room: "))
-    if start == "아르테크네":
-        start = "7"
-    final_path, initial_pos = result(start, end)
 
-    result_path = []
-    for i in range(len(final_path)):
-        if 'distance' in final_path[i]:
-            distance = final_path[i]['distance']
-        else:
-            distance = 0
+    if start == end:
+        set_nodes()
+        arrived_image(start)
 
-        if 'angle' in final_path[i]:
-            angle = final_path[i]['angle']
-            if angle > 180:
-                angle = 270
+    else:
+        if start == "아르테크네":
+            start = "7"
+        final_path, initial_pos = result(start, end)
+
+        result_path = []
+        for i in range(len(final_path)):
+            if 'distance' in final_path[i]:
+                distance = final_path[i]['distance']
             else:
-                angle = 90
-        else:
-            angle = 0
+                distance = 0
 
-        item = {'distance': distance, 'angle': angle}
-        print(item)
-        result_path.append(item)
+            if 'angle' in final_path[i]:
+                angle = final_path[i]['angle']
+                if angle > 180:
+                    angle = 270
+                else:
+                    angle = 90
+            else:
+                angle = 0
 
-    print(result_path)
+            item = {'distance': distance, 'angle': angle}
+            print(item)
+            result_path.append(item)
+
+        print(result_path)
