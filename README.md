@@ -107,7 +107,7 @@
 
 {
     "path": [] distance => 거리, angle => 회전각, <br>
-    "start_direction": "right" or "left" or 개발중 - "top" or "bottom"
+    "start_direction": 시작각도 angle
 }
 
 #### example
@@ -135,6 +135,7 @@
             "distance": 4
         }
     ],
-    "start_direction": "right"
+    "image": iVBORw0KGgoAAAANSUhEUgAACHUAAAR2CAIAAAA3fo4TAACyiklEQVR4nOz9e4wkW54f9kX2o...=
+    "start_direction": 96.25
 }
 
