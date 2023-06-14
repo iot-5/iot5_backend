@@ -76,9 +76,11 @@ def find_path():
 
         item = {'distance': distance, 'angle': angle}
         result_path.append(item)
+    if intial_angle < 0:
+        intial_angle = intial_angle+360
 
     response = {
-        "start_direction": intial_angle % 360,
+        "start_direction": intial_angle,
         "path": result_path,
         "image": path_image,
     }
