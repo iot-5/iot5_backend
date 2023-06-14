@@ -405,11 +405,16 @@ def result_backend(start, end):
 
     initial_angle, left = calculate_angle(G.nodes[astar_path[0]]['pos'][0]-1, G.nodes[astar_path[0]]
                                           ['pos'][1], G.nodes[astar_path[0]]['pos'][0], G.nodes[astar_path[0]]['pos'][1], G.nodes[astar_path[1]]['pos'][0], G.nodes[astar_path[1]]['pos'][1])
-    if left == 1:
-        initial_angle = 180 - initial_angle
+    if initial_angle == 0:
+        if left == 1:
+            initial_angle = 180
+        else:
+            initial_angle = 0
     else:
-        initial_angle = initial_angle + 180
-
+        if left == 1:
+            initial_angle = 180 - initial_angle
+        else:
+            initial_angle = initial_angle + 180
     if len(astar_path) < 3:
         x1, y1 = G.nodes[astar_path[0]]['pos']
         x2, y2 = G.nodes[astar_path[1]]['pos']

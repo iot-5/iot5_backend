@@ -51,6 +51,11 @@ def calculate_angle(x1, y1, x2, y2, x3, y3):
 
     else:
         angle_deg = 0
+        print(x1, y1)
+        print(x2, y2)
+        print(x3, y3)
+        if (x2-x1) * (x2-x3) < 0:
+            left = True
     return angle_deg, left
 
 
@@ -132,6 +137,19 @@ def add_edges_from_top_line(G, top_line_nodes):
         G.add_edge(node1, "6", weight=ueclidian_distance(
             x1, y1, 667.29, 739.5))
         G.add_edge(node1, "8", weight=ueclidian_distance(x1, y1, 828.5, 181))
+
+
+def add_edges_from_right_line(G, right_nodes):
+    for i in range(len(right_nodes) - 1):
+        node1 = right_nodes[i]
+        node2 = right_nodes[i + 1]
+        x1, y1 = G.nodes[node1]['pos']
+        x2, y2 = G.nodes[node2]['pos']
+        weight = ueclidian_distance(x1, y1, x2, y2)
+        G.add_edge(node1, node2, weight=weight)
+        # 1번, 2번 노드 연결
+        G.add_edge(node1, "1", weight=ueclidian_distance(x1, y1, 909, 1882.5))
+        G.add_edge(node1, "2", weight=ueclidian_distance(x1, y1, 338, 1882.5))
 
 
 def calculate_third_side_length(side1, side2, angle):
@@ -252,13 +270,17 @@ def set_nodes():
 
     # Add edges based on the bottom line and top line
     bottom_line_nodes = [room['name']
-                         for room in data['rooms'] if room.get('bottom', 0) == 0]
+                         for room in data['rooms'] if room['bottom'] == 0]
     top_line_nodes = [room['name']
-                      for room in data['rooms'] if room.get('bottom', 0) == 1]
-    elevator_nodes = [room['name']
-                      for room in data['rooms'] if room.get('bottom', 2) == 1]
+                      for room in data['rooms'] if room['bottom'] == 1]
+    right_node = [room['name']
+                  for room in data['rooms'] if room['bottom'] == 2]
+    for room in data['rooms']:
+        print(room['bottom'])
+    print(right_node)
     add_edges_from_bottom_line(G, bottom_line_nodes)
     add_edges_from_top_line(G, top_line_nodes)
+    add_edges_from_right_line(G, right_node)
 
     # add edge in reverse direction
     for node1, node2 in list(G.edges()):
@@ -313,10 +335,17 @@ def result(start, end):
 
     initial_angle, left = calculate_angle(G.nodes[astar_path[0]]['pos'][0]-1, G.nodes[astar_path[0]]
                                           ['pos'][1], G.nodes[astar_path[0]]['pos'][0], G.nodes[astar_path[0]]['pos'][1], G.nodes[astar_path[1]]['pos'][0], G.nodes[astar_path[1]]['pos'][1])
-    if left == 1:
-        print("initial_angle", 180 - initial_angle)
+    if initial_angle == 0:
+        if left == 1:
+            initial_angle = 180
+        else:
+            initial_angle = 0
     else:
-        print("initial_angle", initial_angle + 180)
+        if left == 1:
+            initial_angle = 180 - initial_angle
+        else:
+            initial_angle = initial_angle + 180
+    print("initial angle: ", initial_angle)
     print(astar_path)
     distance = 0
     final_path = []
@@ -414,10 +443,16 @@ def result_backend(start, end):
 
     initial_angle, left = calculate_angle(G.nodes[astar_path[0]]['pos'][0]-1, G.nodes[astar_path[0]]
                                           ['pos'][1], G.nodes[astar_path[0]]['pos'][0], G.nodes[astar_path[0]]['pos'][1], G.nodes[astar_path[1]]['pos'][0], G.nodes[astar_path[1]]['pos'][1])
-    if left == 1:
-        initial_angle = 180 - initial_angle
+    if initial_angle == 0:
+        if left == 1:
+            initial_angle = 180
+        else:
+            initial_angle = 0
     else:
-        initial_angle = initial_angle + 180
+        if left == 1:
+            initial_angle = 180 - initial_angle
+        else:
+            initial_angle = initial_angle + 180
 
     if len(astar_path) < 3:
         x1, y1 = G.nodes[astar_path[0]]['pos']
