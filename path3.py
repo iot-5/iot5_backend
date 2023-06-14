@@ -51,9 +51,9 @@ def calculate_angle(x1, y1, x2, y2, x3, y3):
 
     else:
         angle_deg = 0
-        print(x1, y1)
-        print(x2, y2)
-        print(x3, y3)
+        # print(x1, y1)
+        # print(x2, y2)
+        # print(x3, y3)
         if (x2-x1) * (x2-x3) < 0:
             left = True
     return angle_deg, left
@@ -323,7 +323,7 @@ def result(start, end):
     real_world_scale = 0.04796469368
     real_world_angle = 6.25
     astar_path = nx.astar_path(G, start, end)
-    print("node: ", astar_path)
+    # print("node: ", astar_path)
     distance = 0
     final_path = []
     if (G.nodes[astar_path[0]]['pos'][1] < G.nodes[astar_path[1]]['pos'][1]):
@@ -340,7 +340,7 @@ def result(start, end):
     else:
         initial_angle = initial_angle + 180
 
-    print("initial angle: ", initial_angle)
+    # print("initial angle: ", initial_angle)
     if len(astar_path) < 3:
         x1, y1 = G.nodes[astar_path[0]]['pos']
         x2, y2 = G.nodes[astar_path[1]]['pos']
@@ -373,7 +373,7 @@ def result(start, end):
                                                                 G.nodes[last_room2]['pos'][0], G.nodes[last_room2]['pos'][1]) * real_world_scale)})
 
     show_on_image(astar_path)
-    print("ff: ", final_path)
+    # print("ff: ", final_path)
     for i in range(len(final_path)):
         if 'angle' in final_path[i]:
             # print(i['angle'])
@@ -418,7 +418,7 @@ def result_backend(start, end):
     real_world_angle = 6.25
     astar_path = nx.astar_path(G, start, end)
     distance = 0
-    print("node: ", astar_path)
+    # print("node: ", astar_path)
     final_path = []
     if (G.nodes[astar_path[0]]['pos'][1] < G.nodes[astar_path[1]]['pos'][1]):
         initial_way_elevator = 1

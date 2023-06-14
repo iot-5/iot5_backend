@@ -51,9 +51,7 @@ def calculate_angle(x1, y1, x2, y2, x3, y3):
 
     else:
         angle_deg = 0
-        print(x1, y1)
-        print(x2, y2)
-        print(x3, y3)
+
         if (x2-x1) * (x2-x3) < 0:
             left = True
     return angle_deg, left
@@ -275,9 +273,9 @@ def set_nodes():
                       for room in data['rooms'] if room['bottom'] == 1]
     right_node = [room['name']
                   for room in data['rooms'] if room['bottom'] == 2]
-    for room in data['rooms']:
-        print(room['bottom'])
-    print(right_node)
+    # for room in data['rooms']:
+    #     print(room['bottom'])
+    # print(right_node)
     add_edges_from_bottom_line(G, bottom_line_nodes)
     add_edges_from_top_line(G, top_line_nodes)
     add_edges_from_right_line(G, right_node)
