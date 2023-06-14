@@ -70,7 +70,7 @@ def find_path():
         else:
             if start == "5층 아르테크네 앞 엘베":
                 start = "8"
-            final_path, initial_pos, astar_path, intial_angle = path2.result_backend(
+            final_path, initial_pos, astar_path, intial_angle = path3.result_backend(
                 start, end)
             path_image = path3.show_on_image(astar_path)
     else:
