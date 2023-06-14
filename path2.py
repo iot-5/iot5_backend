@@ -13,6 +13,39 @@ import math
 G = nx.MultiDiGraph()
 
 
+def text_to_image():
+    # Read the text file
+    content = "Arrived"
+
+    # Set the image size and background color
+    image_width = 100
+    image_height = 30
+    background_color = (255, 255, 255)  # White
+
+    # Create a new image with the specified size and background color
+    image = Image.new('RGB', (image_width, image_height), background_color)
+    draw = ImageDraw.Draw(image)
+
+    # Set the font and size
+    # Replace 'arial.ttf' with your desired font file
+    font = ImageFont.truetype('arial.ttf', 24)
+
+    # Set the text color
+    text_color = (40, 152, 255)  # Black
+
+    # Calculate the position to center the text
+    text_width, text_height = draw.textsize(content, font=font)
+    text_x = (image_width - text_width) // 2
+    text_y = (image_height - text_height) // 2
+
+    # Draw the text on the image
+    draw.text((text_x, text_y), content, fill=text_color, font=font)
+
+    # Save the image as a JPG file
+    # image.save(output_image, 'JPEG')
+    return image
+
+
 def calculate_rotation(x1, y1, x2, y2, x3, y3):
     vector1 = (x2 - x1, y2 - y1)
     vector2 = (x3 - x2, y3 - y2)
@@ -529,6 +562,7 @@ def arrived_image(final_node):
     draw = ImageDraw.Draw(path_image)
     final_x, final_y = G.nodes[final_node]['pos']
     print(final_x, final_y)
+
     marker_image_path = "arrived.png"
     marker_image = Image.open(marker_image_path).convert("RGBA")
 
@@ -545,12 +579,19 @@ def arrived_image(final_node):
     radius = 10
     destination_name = "Arrived!"
 
+    text_image = text_to_image().convert("RGBA")
+    text_width, text_height = text_image.size
+    new_text_width = int(text_width * 3)
+    new_text_height = int(text_height * 3)
+    text_image = text_image.resize((new_text_width, new_text_height))
+    text_image.show()
     text_font = ImageFont.truetype("arial.ttf", 100)
-    text_width, text_height = draw.textsize(destination_name, font=text_font)
-    text_x = final_x + radius - text_width // 2
-    text_y = final_y + radius + 5
-    draw.text((text_y, text_x), destination_name,
-              fill=(40, 152, 255), font=text_font)
+    # text_width, text_height = draw.textsize(destination_name, font=text_font)
+    text_x = int(marker_x - 90)
+    text_y = int(marker_y - 60)
+    # draw.text((text_y, text_x), destination_name,
+    #           fill=(40, 152, 255), font=text_font)
+    path_image.paste(text_image, (text_y, text_x), text_image)
     path_image.show()
     return path_image
 
