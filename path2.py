@@ -610,8 +610,14 @@ if __name__ == "__main__":
         arrived_image(start)
 
     else:
-        if start == "아르테크네":
+        if start == "4층 아르테크네":
             start = "7"
+        if end == "4층 아르테크네":
+            end = "7"
+        if start == "418":
+            start = "5"
+        if end == "418":
+            end = "5"
         final_path, initial_pos = result(start, end)
 
         result_path = []
