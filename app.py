@@ -56,8 +56,12 @@ def find_path():
         else:
             if start == "4층 아르테크네":
                 start == "7"
+            if end == "4층 아르테크네":
+                end = "7"
             if start == "418":
                 start == "5"
+            if end == "418":
+                end = "5"
 
             final_path, initial_pos, astar_path, intial_angle = path2.result_backend(
                 start, end)
@@ -70,6 +74,8 @@ def find_path():
         else:
             if start == "5층 아르테크네 앞 엘베":
                 start = "8"
+            if end == "5층 아르테크네 앞 엘베":
+                end = "8"
             final_path, initial_pos, astar_path, intial_angle = path3.result_backend(
                 start, end)
             path_image = path3.show_on_image(astar_path)
