@@ -52,6 +52,8 @@ def find_path():
     if data['start'][0] == '4':
         if start == "4층 아르테크네":
             start == "7"
+        if start == "418":
+            start == "5"
         final_path, initial_pos, astar_path, intial_angle = path2.result_backend(
             start, end)
         path_image = path2.show_on_image(astar_path)
