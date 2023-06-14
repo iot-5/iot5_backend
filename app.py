@@ -77,9 +77,8 @@ def find_path():
         item = {'distance': distance, 'angle': angle}
         result_path.append(item)
 
-
     response = {
-        "start_direction": intial_angle,
+        "start_direction": intial_angle % 360,
         "path": result_path,
         "image": path_image,
     }
