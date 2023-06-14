@@ -297,7 +297,7 @@ def show_on_image(astar_path):
 
 def result(start, end):
     set_nodes()
-    print(G.edges())
+    # print(G.edges())
     real_world_scale = 0.04796469368
     real_world_angle = 6.25
     astar_path = nx.astar_path(G, start, end)
@@ -316,7 +316,8 @@ def result(start, end):
         initial_angle = 180 - initial_angle
     else:
         initial_angle = initial_angle + 180
-    print(initial_angle)
+
+    print("initial angle: ", initial_angle)
     if len(astar_path) < 3:
         x1, y1 = G.nodes[astar_path[0]]['pos']
         x2, y2 = G.nodes[astar_path[1]]['pos']
