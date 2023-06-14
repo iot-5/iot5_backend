@@ -387,15 +387,15 @@ def result(start, end):
 
     show_on_image(astar_path)
     # print("ff: ", final_path)
-    # for i in range(len(final_path)):
-    #     if 'angle' in final_path[i]:
-    #         # print(i['angle'])
-    #         if final_path[i]['angle'] < 10 or final_path[i]['angle'] > 350:
-    #             final_path[i] = {"distance": round(calculate_third_side_length(
-    #                 final_path[i-1]['distance'], final_path[i+1]['distance'], 180-final_path[i]['angle']))}
-    #             final_path[i-1] = {'distance': 0}
-    #             final_path[i+1] = {'distance': 0}
-    #             i = i+1
+    for i in range(len(final_path)):
+        if 'angle' in final_path[i]:
+            # print(i['angle'])
+            if final_path[i]['angle'] < 10 or final_path[i]['angle'] > 350:
+                final_path[i] = {"distance": round(calculate_third_side_length(
+                    final_path[i-1]['distance'], final_path[i+1]['distance'], 180-final_path[i]['angle']))}
+                final_path[i-1] = {'distance': 0}
+                final_path[i+1] = {'distance': 0}
+                i = i+1
 
     # delete {"distance": 0} in list, but don't touch "angle"
     print("ff", final_path)

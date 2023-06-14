@@ -82,7 +82,12 @@ def find_path():
         result_path.append(item)
     if intial_angle < 0:
         intial_angle = intial_angle+360
-
+    for (i, item) in enumerate(result_path):
+        # 예각은 그냥 90도로 표현, 둔각은 270도로 표현
+        if item['angle'] > 180:
+            item['angle'] = 270
+        else:
+            item['angle'] = 90
     response = {
         "start_direction": intial_angle,
         "path": result_path,
