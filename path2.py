@@ -401,6 +401,7 @@ def result(start, end):
 def result_backend(start, end):
     real_world_scale = 0.04796469368
     initial_way_elevator = 0
+    real_world_angle = 6.25
     astar_path = nx.astar_path(G, start, end)
     distance = 0
     final_path = []
@@ -483,7 +484,7 @@ def result_backend(start, end):
 
     if current_distance is not None:
         merged_data.append({'distance': current_distance})
-    return merged_data, initial_way_elevator, astar_path, initial_angle
+    return merged_data, initial_way_elevator, astar_path, initial_angle + real_world_angle
 
 
 if __name__ == "__main__":

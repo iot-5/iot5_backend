@@ -299,9 +299,8 @@ def result(start, end):
     set_nodes()
     print(G.edges())
     real_world_scale = 0.04796469368
-    initial_way_elevator = 0
+    real_world_angle = 6.25
     astar_path = nx.astar_path(G, start, end)
-    print(astar_path)
     distance = 0
     final_path = []
     if (G.nodes[astar_path[0]]['pos'][1] < G.nodes[astar_path[1]]['pos'][1]):
@@ -311,11 +310,18 @@ def result(start, end):
     else:
         initial_way_elevator = 2
 
+    initial_angle, left = calculate_angle(G.nodes[astar_path[0]]['pos'][0]-1, G.nodes[astar_path[0]]
+                                          ['pos'][1], G.nodes[astar_path[0]]['pos'][0], G.nodes[astar_path[0]]['pos'][1], G.nodes[astar_path[1]]['pos'][0], G.nodes[astar_path[1]]['pos'][1])
+    if left == 1:
+        initial_angle = 180 - initial_angle
+    else:
+        initial_angle = initial_angle + 180
+    print(initial_angle)
     if len(astar_path) < 3:
         x1, y1 = G.nodes[astar_path[0]]['pos']
         x2, y2 = G.nodes[astar_path[1]]['pos']
         distance = ueclidian_distance(x1, y1, x2, y2)
-        final_path.append(round(distance * real_world_scale))
+        final_path.append({"distance": round(distance * real_world_scale)})
     else:
         for i in range(len(astar_path) - 2):
             x1, y1 = G.nodes[astar_path[i]]['pos']
@@ -382,10 +388,10 @@ def result(start, end):
     return merged_data, initial_way_elevator
 
 
-def result_cli(start, end):
-    set_nodes()
+def result_backend(start, end):
     real_world_scale = 0.04796469368
     initial_way_elevator = 0
+    real_world_angle = 6.25
     astar_path = nx.astar_path(G, start, end)
     distance = 0
     final_path = []
@@ -395,6 +401,13 @@ def result_cli(start, end):
         initial_way_elevator = 0
     else:
         initial_way_elevator = 2
+
+    initial_angle, left = calculate_angle(G.nodes[astar_path[0]]['pos'][0]-1, G.nodes[astar_path[0]]
+                                          ['pos'][1], G.nodes[astar_path[0]]['pos'][0], G.nodes[astar_path[0]]['pos'][1], G.nodes[astar_path[1]]['pos'][0], G.nodes[astar_path[1]]['pos'][1])
+    if left == 1:
+        initial_angle = 180 - initial_angle
+    else:
+        initial_angle = initial_angle + 180
 
     if len(astar_path) < 3:
         x1, y1 = G.nodes[astar_path[0]]['pos']
@@ -461,7 +474,7 @@ def result_cli(start, end):
 
     if current_distance is not None:
         merged_data.append({'distance': current_distance})
-    return merged_data, initial_way_elevator
+    return merged_data, initial_way_elevator, astar_path, initial_angle + real_world_angle
 
 
 if __name__ == "__main__":
