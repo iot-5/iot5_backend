@@ -5,12 +5,45 @@ import time
 
 import networkx as nx
 import matplotlib.pyplot as plt
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 import json
 import math
 
 G = nx.MultiDiGraph()
+
+
+def text_to_image():
+    # Read the text file
+    content = "Arrived"
+
+    # Set the image size and background color
+    image_width = 100
+    image_height = 30
+    background_color = (255, 255, 255)  # White
+
+    # Create a new image with the specified size and background color
+    image = Image.new('RGB', (image_width, image_height), background_color)
+    draw = ImageDraw.Draw(image)
+
+    # Set the font and size
+    # Replace 'arial.ttf' with your desired font file
+    font = ImageFont.truetype('arial.ttf', 24)
+
+    # Set the text color
+    text_color = (40, 152, 255)  # Black
+
+    # Calculate the position to center the text
+    text_width, text_height = draw.textsize(content, font=font)
+    text_x = (image_width - text_width) // 2
+    text_y = (image_height - text_height) // 2
+
+    # Draw the text on the image
+    draw.text((text_x, text_y), content, fill=text_color, font=font)
+
+    # Save the image as a JPG file
+    # image.save(output_image, 'JPEG')
+    return image
 
 
 def calculate_rotation(x1, y1, x2, y2, x3, y3):
@@ -75,8 +108,32 @@ def draw_path_on_image(image_array, path):
     radius = 15
     draw.ellipse((start_y - radius, start_x - radius, start_y +
                  radius, start_x + radius), fill=(40, 152, 255))
-    draw.ellipse((end_y - radius, end_x - radius, end_y +
-                 radius, end_x + radius), fill=(40, 152, 255))
+    # draw.ellipse((end_y - radius, end_x - radius, end_y +
+    #              radius, end_x + radius), fill=(40, 152, 255))
+
+    # Load the marker image
+    marker_image_path = "marker2.png"
+    marker_image = Image.open(marker_image_path).convert("RGBA")
+
+    marker_width, marker_height = marker_image.size
+    new_width = int(marker_width * 0.5)
+    new_height = int(marker_height * 0.5)
+    marker_image = marker_image.resize((new_width, new_height))
+
+    # Calculate the marker position
+    dest_x, dest_y = path[-1]
+    marker_x = int(dest_x - new_width-10)
+    marker_y = int(dest_y - new_height/3)
+    # Paste the marker image onto the path image
+    path_image.paste(marker_image, (marker_y, marker_x), marker_image)
+
+    # Draw destination name below the marker
+    # Choose the desired font and size
+    # font = ImageFont.truetype("arial.ttf", 16)
+    # text_width, text_height = draw.textsize(destination_name)
+    # text_x = dest_x + radius - text_width // 2
+    # text_y = dest_y + radius + 5
+    # draw.text((text_y, text_x), destination_name, fill=(0, 0, 0))
 
     return path_image
 
@@ -335,11 +392,19 @@ def result(start, end):
 
     initial_angle, left = calculate_angle(G.nodes[astar_path[0]]['pos'][0]-1, G.nodes[astar_path[0]]
                                           ['pos'][1], G.nodes[astar_path[0]]['pos'][0], G.nodes[astar_path[0]]['pos'][1], G.nodes[astar_path[1]]['pos'][0], G.nodes[astar_path[1]]['pos'][1])
-    if left == 1:
-        initial_angle = 180 - initial_angle
+    if initial_angle == 0:
+        if left == 1:
+            initial_angle = 180
+        else:
+            initial_angle = 0
     else:
-        initial_angle = initial_angle + 180
+        if left == 1:
+            initial_angle = 180 - initial_angle
+        else:
+            initial_angle = initial_angle + 180
 
+    initial_angle = initial_angle + 90
+    initial_angle = initial_angle % 360
     # print("initial angle: ", initial_angle)
     if len(astar_path) < 3:
         x1, y1 = G.nodes[astar_path[0]]['pos']
@@ -389,7 +454,7 @@ def result(start, end):
     final_path = [i for i in final_path if i.get(
         'distance', 0) != 0 or i.get('angle', 0) != 0]
     merged_data = []
-
+    merged_data.append({'angle': initial_angle})
     current_distance = None
 
     for item in final_path:
@@ -439,11 +504,14 @@ def result_backend(start, end):
             initial_angle = 180 - initial_angle
         else:
             initial_angle = initial_angle + 180
+    initial_angle = initial_angle + 90
+    initial_angle = initial_angle % 360
+
     if len(astar_path) < 3:
         x1, y1 = G.nodes[astar_path[0]]['pos']
         x2, y2 = G.nodes[astar_path[1]]['pos']
         distance = ueclidian_distance(x1, y1, x2, y2)
-        final_path.append(round(distance * real_world_scale))
+        final_path.append({"distance": round(distance * real_world_scale)})
     else:
         for i in range(len(astar_path) - 2):
             x1, y1 = G.nodes[astar_path[i]]['pos']
@@ -486,7 +554,7 @@ def result_backend(start, end):
     final_path = [i for i in final_path if i.get(
         'distance', 0) != 0 or i.get('angle', 0) != 0]
     merged_data = []
-
+    merged_data.append({'angle': initial_angle})
     current_distance = None
 
     for item in final_path:
@@ -507,17 +575,80 @@ def result_backend(start, end):
     return merged_data, initial_way_elevator, astar_path, initial_angle + real_world_angle
 
 
+def arrived_image(final_node):
+
+    image_path = '5th.png'
+    image = Image.open(image_path).convert("RGBA")
+    image_array = np.array(image)
+    path_image = Image.fromarray(image_array)
+    draw = ImageDraw.Draw(path_image)
+    final_x, final_y = G.nodes[final_node]['pos']
+    print(final_x, final_y)
+
+    marker_image_path = "arrived.png"
+    marker_image = Image.open(marker_image_path).convert("RGBA")
+
+    marker_width, marker_height = marker_image.size
+    print(marker_width, marker_height)
+    new_width = int(marker_width * 0.2)
+    new_height = int(marker_height * 0.2)
+    marker_image = marker_image.resize((new_width, new_height))
+
+    marker_x = int(final_x - new_width)
+    marker_y = int(final_y - new_height+30)
+    print(marker_x, marker_y)
+    path_image.paste(marker_image, (marker_y, marker_x), marker_image)
+    radius = 10
+    destination_name = "Arrived!"
+
+    text_image = text_to_image().convert("RGBA")
+    text_width, text_height = text_image.size
+    new_text_width = int(text_width * 3)
+    new_text_height = int(text_height * 3)
+    text_image = text_image.resize((new_text_width, new_text_height))
+    text_image.show()
+    text_font = ImageFont.truetype("arial.ttf", 100)
+    # text_width, text_height = draw.textsize(destination_name, font=text_font)
+    text_x = int(marker_x - 90)
+    text_y = int(marker_y - 60)
+    # draw.text((text_y, text_x), destination_name,
+    #           fill=(40, 152, 255), font=text_font)
+    path_image.paste(text_image, (text_y, text_x), text_image)
+    path_image.show()
+    return path_image
+
+
 if __name__ == "__main__":
     start = (input("Enter start room: "))
     end = (input("Enter end room: "))
-    if start == "아르테크네 앞 엘베":
-        start = "8"
-    final_path, initial_pos = result(start, end)
-    if initial_pos == 0:
-        start_direct = "left"
-    elif initial_pos == 1:
-        start_direct = "right"
+    if start == end:
+        set_nodes()
+        arrived_image(start)
     else:
-        start_direct = "None-개발중"
-    print(start_direct)
-    print(final_path)
+        if start == "아르테크네 앞 엘베":
+            start = "8"
+
+        final_path, initial_pos = result(start, end)
+
+        result_path = []
+        temp = final_path[0]['angle']
+        result_path.append({'distance': 0, 'angle': final_path[0]['angle']})
+        for i in range(1, len(final_path)):
+            if 'distance' in final_path[i]:
+                distance = final_path[i]['distance']
+            else:
+                distance = 0
+
+            if 'angle' in final_path[i]:
+                angle = temp - final_path[i]['angle']
+                angle = angle + 360
+                angle = angle % 360
+                temp = angle
+            else:
+                angle = 0
+
+            item = {'distance': distance, 'angle': angle}
+            print(item)
+            result_path.append(item)
+
+        print(result_path)

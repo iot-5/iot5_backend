@@ -64,34 +64,37 @@ def find_path():
             path_image = path2.show_on_image(astar_path)
 
     elif data['start'][0] == '5':
-        if start == "5층 아르테크네 앞 엘베":
-            start = "8"
-        final_path, initial_pos, astar_path, intial_angle = path2.result_backend(
-            start, end)
-        path_image = path3.show_on_image(astar_path)
+        if start == end:
+            path_image = path3.arrived_image(start)
+            final_path, initial_pos, astar_path, intial_angle = None
+        else:
+            if start == "5층 아르테크네 앞 엘베":
+                start = "8"
+            final_path, initial_pos, astar_path, intial_angle = path2.result_backend(
+                start, end)
+            path_image = path3.show_on_image(astar_path)
     else:
         print("인식 할 수 없음")
 
-        result_path = []
-        temp = final_path[0]['angle']
-        result_path.append({'distance': 0, 'angle': final_path[0]['angle']})
-        for i in range(1, len(final_path)):
-            if 'distance' in final_path[i]:
-                distance = final_path[i]['distance']
-            else:
-                distance = 0
+    result_path = []
+    temp = final_path[0]['angle']
+    result_path.append({'distance': 0, 'angle': final_path[0]['angle']})
+    for i in range(1, len(final_path)):
+        if 'distance' in final_path[i]:
+            distance = final_path[i]['distance']
+        else:
+            distance = 0
 
-            if 'angle' in final_path[i]:
-                angle = temp - final_path[i]['angle']
-                angle = angle + 360
-                angle = angle % 360
-                temp = angle
-            else:
-                angle = 0
-
-            item = {'distance': distance, 'angle': angle}
-            print(item)
-            result_path.append(item)
+        if 'angle' in final_path[i]:
+            angle = temp - final_path[i]['angle']
+            angle = angle + 360
+            angle = angle % 360
+            temp = angle
+        else:
+            angle = 0
+        item = {'distance': distance, 'angle': angle}
+        print(item)
+        result_path.append(item)
 
     if intial_angle < 0:
         intial_angle = intial_angle+360
