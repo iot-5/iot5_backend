@@ -49,6 +49,8 @@ def calculate_angle(x1, y1, x2, y2, x3, y3):
 
         angle_deg = math.degrees(angle_rad)
 
+    else:
+        angle_deg = 0
     return angle_deg, left
 
 
@@ -305,8 +307,16 @@ def result(start, end):
     set_nodes()
     # print(list(G.edges()))
     real_world_scale = 0.04796469368
+    real_world_angle = 6.25
     initial_way_elevator = 0
     astar_path = nx.astar_path(G, start, end)
+
+    initial_angle, left = calculate_angle(G.nodes[astar_path[0]]['pos'][0]-1, G.nodes[astar_path[0]]
+                                          ['pos'][1], G.nodes[astar_path[0]]['pos'][0], G.nodes[astar_path[0]]['pos'][1], G.nodes[astar_path[1]]['pos'][0], G.nodes[astar_path[1]]['pos'][1])
+    if left == 1:
+        print("initial_angle", 180 - initial_angle)
+    else:
+        print("initial_angle", initial_angle + 180)
     print(astar_path)
     distance = 0
     final_path = []
@@ -321,7 +331,7 @@ def result(start, end):
         x1, y1 = G.nodes[astar_path[0]]['pos']
         x2, y2 = G.nodes[astar_path[1]]['pos']
         distance = ueclidian_distance(x1, y1, x2, y2)
-        final_path.append(round(distance * real_world_scale))
+        final_path.append({'distance': round(distance * real_world_scale)})
     else:
         for i in range(len(astar_path) - 2):
             x1, y1 = G.nodes[astar_path[i]]['pos']
@@ -361,7 +371,7 @@ def result(start, end):
     #             i = i+1
 
     # delete {"distance": 0} in list, but don't touch "angle"
-
+    print("ff", final_path)
     final_path = [i for i in final_path if i.get(
         'distance', 0) != 0 or i.get('angle', 0) != 0]
     merged_data = []

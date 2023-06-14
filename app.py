@@ -16,6 +16,7 @@ app = Flask(__name__)
 
 predicter = Predicter()
 
+
 @app.route('/train', methods=['POST'])
 def learn_endpoint():
     data = request.get_json()
@@ -24,6 +25,7 @@ def learn_endpoint():
     ap_dict = aps_to_dict(ap_data)
     learn(name, data=ap_dict)
     return jsonify({'message': 'Learning complete'})
+
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -36,7 +38,6 @@ def predict():
         aps.append({"ssid": ssid, "bssid": bssid, "quality": quality})
     location = predicter.predict(aps)
     return jsonify({"location": location})
-
 
 
 @app.route('/path', methods=['POST'])
@@ -68,7 +69,6 @@ def find_path():
         item = {'distance': distance, 'angle': angle}
         result_path.append(item)
 
-
     path_image = show_on_image(astar_path)
 
     response = {
@@ -78,6 +78,7 @@ def find_path():
     }
 
     return jsonify(response)
+
 
 @app.route('/locations', methods=['GET'])
 def get_locations():
