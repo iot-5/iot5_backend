@@ -625,8 +625,14 @@ if __name__ == "__main__":
         set_nodes()
         arrived_image(start)
     else:
-        if start == "아르테크네 앞 엘베":
+        if start == "5층 아르테크네 앞 엘베":
             start = "8"
+        if end == "5층 아르테크네 앞 엘베":
+            end = "8"
+        if start == "5층계단1":
+            start = "8"
+        if end == "5층계단1":
+            end = "8"
 
         final_path, initial_pos = result(start, end)
 
