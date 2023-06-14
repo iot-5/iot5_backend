@@ -226,26 +226,26 @@ def set_nodes():
     G.add_edge("4", "6", weight=ueclidian_distance(375.5, 1610.5, 637.54, 707))
     G.add_edge("6", "8", weight=ueclidian_distance(637.54, 707, 796.5, 154))
 
-    G.add_node("cube_n", pos=(548.5, 1164.5))
-    G.add_node("cube_s", pos=(832.5, 1329))
-    G.add_node("cube", pos=(672.31, 1236.18))  # cube_n, cube_s, cube 연결
+    G.add_node("G-CUBE N문", pos=(548.5, 1164.5))
+    G.add_node("G-CUBE S문", pos=(832.5, 1329))
+    G.add_node("G-CUBE 내부", pos=(672.31, 1236.18))  # cube_n, cube_s, cube 연결
 
-    G.add_edge("cube_n", "cube", weight=ueclidian_distance(
+    G.add_edge("5층 G-CUBE N문", "5층 G-CUBE 내부", weight=ueclidian_distance(
         548.5, 1164.5, 672.31, 1236.18))
-    G.add_edge("cube_s", "cube", weight=ueclidian_distance(
+    G.add_edge("5층 G-CUBE S문", "5층 G-CUBE 내부", weight=ueclidian_distance(
         832.5, 1329, 672.31, 1236.18))
 
     G.add_node("cube_n2", pos=(512.11, 1143.36))  # "4", "6" 라인, cube_n연결
     G.add_node("cube_s2", pos=(880, 1355.5))    # "3", "5" 라인, cube_s연결
 
-    G.add_edge("cube_n2", "cube_n", weight=ueclidian_distance(
+    G.add_edge("cube_n2", "5층 G-CUBE N문", weight=ueclidian_distance(
         512.11, 1143.36, 548.5, 1164.5))
     G.add_edge("cube_n2", "6", weight=ueclidian_distance(
         512.11, 1143.36, 637.54, 707))
     G.add_edge("cube_s2", "4", weight=ueclidian_distance(
         880, 1355.5, 375.5, 1610.5))
 
-    G.add_edge("cube_s2", "cube_s", weight=ueclidian_distance(
+    G.add_edge("cube_s2", "5층 G-CUBE S문", weight=ueclidian_distance(
         880, 1355.5, 832.5, 1329))
     G.add_edge("cube_s2", "5", weight=ueclidian_distance(
         880, 1355.5, 880, 707))
