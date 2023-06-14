@@ -75,19 +75,25 @@ def find_path():
 
         if 'angle' in final_path[i]:
             angle = final_path[i]['angle']
+            if angle > 180:
+                angle = 270
+            else:
+                angle = 90
         else:
             angle = 0
 
         item = {'distance': distance, 'angle': angle}
+        # print(item)
         result_path.append(item)
+
     if intial_angle < 0:
         intial_angle = intial_angle+360
-    for (i, item) in enumerate(result_path):
-        # 예각은 그냥 90도로 표현, 둔각은 270도로 표현
-        if item['angle'] > 180:
-            item['angle'] = 270
-        else:
-            item['angle'] = 90
+    # for (i, item) in enumerate(result_path):
+    #     # 예각은 그냥 90도로 표현, 둔각은 270도로 표현
+    #     if item['angle'] > 180:
+    #         item['angle'] = 270
+    #     else:
+    #         item['angle'] = 90
     response = {
         "start_direction": intial_angle,
         "path": result_path,

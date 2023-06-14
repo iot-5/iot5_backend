@@ -526,11 +526,25 @@ if __name__ == "__main__":
     if start == "아르테크네":
         start = "7"
     final_path, initial_pos = result(start, end)
-    if initial_pos == 0:
-        start_direct = "left"
-    elif initial_pos == 1:
-        start_direct = "right"
-    else:
-        start_direct = "None-개발중"
-    print(start_direct)
-    print(final_path)
+
+    result_path = []
+    for i in range(len(final_path)):
+        if 'distance' in final_path[i]:
+            distance = final_path[i]['distance']
+        else:
+            distance = 0
+
+        if 'angle' in final_path[i]:
+            angle = final_path[i]['angle']
+            if angle > 180:
+                angle = 270
+            else:
+                angle = 90
+        else:
+            angle = 0
+
+        item = {'distance': distance, 'angle': angle}
+        print(item)
+        result_path.append(item)
+
+    print(result_path)
