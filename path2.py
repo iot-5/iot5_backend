@@ -363,7 +363,7 @@ def result(start, end):
     real_world_angle = 6.25
     initial_way_elevator = 0
     astar_path = nx.astar_path(G, start, end)
-
+    final_path = []
     initial_angle, left = calculate_angle(G.nodes[astar_path[0]]['pos'][0]-1, G.nodes[astar_path[0]]
                                           ['pos'][1], G.nodes[astar_path[0]]['pos'][0], G.nodes[astar_path[0]]['pos'][1], G.nodes[astar_path[1]]['pos'][0], G.nodes[astar_path[1]]['pos'][1])
     if initial_angle == 0:
@@ -376,10 +376,12 @@ def result(start, end):
             initial_angle = 180 - initial_angle
         else:
             initial_angle = initial_angle + 180
+    initial_angle = initial_angle + 90
+    initial_angle = initial_angle % 360
     print("initial angle: ", initial_angle)
     print(astar_path)
     distance = 0
-    final_path = []
+    # final_path.append({'angle': initial_angle})
     if (G.nodes[astar_path[0]]['pos'][1] < G.nodes[astar_path[1]]['pos'][1]):
         initial_way_elevator = 1
     elif (G.nodes[astar_path[0]]['pos'][1] > G.nodes[astar_path[1]]['pos'][1]):
@@ -420,6 +422,7 @@ def result(start, end):
 
     show_on_image(astar_path)
     # print("ff: ", final_path)
+
     for i in range(len(final_path)):
         if 'angle' in final_path[i]:
             # print(i['angle'])
@@ -435,7 +438,7 @@ def result(start, end):
     final_path = [i for i in final_path if i.get(
         'distance', 0) != 0 or i.get('angle', 0) != 0]
     merged_data = []
-
+    merged_data.append({'angle': initial_angle})
     current_distance = None
 
     for item in final_path:
@@ -453,7 +456,7 @@ def result(start, end):
 
     if current_distance is not None:
         merged_data.append({'distance': current_distance})
-    # print(merged_data)
+    print("md", merged_data)
     print(initial_way_elevator)
     return merged_data, initial_way_elevator
 
@@ -484,6 +487,8 @@ def result_backend(start, end):
             initial_angle = 180 - initial_angle
         else:
             initial_angle = initial_angle + 180
+    initial_angle = initial_angle + 90
+    initial_angle = initial_angle % 360
 
     if len(astar_path) < 3:
         x1, y1 = G.nodes[astar_path[0]]['pos']
@@ -532,7 +537,7 @@ def result_backend(start, end):
     final_path = [i for i in final_path if i.get(
         'distance', 0) != 0 or i.get('angle', 0) != 0]
     merged_data = []
-
+    merged_data.append({'angle': initial_angle})
     current_distance = None
 
     for item in final_path:
@@ -610,18 +615,19 @@ if __name__ == "__main__":
         final_path, initial_pos = result(start, end)
 
         result_path = []
-        for i in range(len(final_path)):
+        temp = final_path[0]['angle']
+        result_path.append({'distance': 0, 'angle': final_path[0]['angle']})
+        for i in range(1, len(final_path)):
             if 'distance' in final_path[i]:
                 distance = final_path[i]['distance']
             else:
                 distance = 0
 
             if 'angle' in final_path[i]:
-                angle = final_path[i]['angle']
-                if angle > 180:
-                    angle = 270
-                else:
-                    angle = 90
+                angle = temp - final_path[i]['angle']
+                angle = angle + 360
+                angle = angle % 360
+                temp = angle
             else:
                 angle = 0
 

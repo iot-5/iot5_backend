@@ -72,26 +72,26 @@ def find_path():
     else:
         print("인식 할 수 없음")
 
-    result_path = []
-
-    for i in range(len(final_path)):
-        if 'distance' in final_path[i]:
-            distance = final_path[i]['distance']
-        else:
-            distance = 0
-
-        if 'angle' in final_path[i]:
-            angle = final_path[i]['angle']
-            if angle > 180:
-                angle = 270
+        result_path = []
+        temp = final_path[0]['angle']
+        result_path.append({'distance': 0, 'angle': final_path[0]['angle']})
+        for i in range(1, len(final_path)):
+            if 'distance' in final_path[i]:
+                distance = final_path[i]['distance']
             else:
-                angle = 90
-        else:
-            angle = 0
+                distance = 0
 
-        item = {'distance': distance, 'angle': angle}
-        # print(item)
-        result_path.append(item)
+            if 'angle' in final_path[i]:
+                angle = temp - final_path[i]['angle']
+                angle = angle + 360
+                angle = angle % 360
+                temp = angle
+            else:
+                angle = 0
+
+            item = {'distance': distance, 'angle': angle}
+            print(item)
+            result_path.append(item)
 
     if intial_angle < 0:
         intial_angle = intial_angle+360
