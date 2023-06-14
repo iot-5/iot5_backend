@@ -45,7 +45,8 @@ def find_path():
     data = request.get_json()
     start = data['start']
     end = data['end']
-    final_path, initial_pos, astar_path = result_backend(start, end)
+    final_path, initial_pos, astar_path, intial_angle = result_backend(
+        start, end)
     if initial_pos == 0:
         start_direct = "left"
     elif initial_pos == 1:

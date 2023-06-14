@@ -411,6 +411,13 @@ def result_backend(start, end):
     else:
         initial_way_elevator = 2
 
+    initial_angle, left = calculate_angle(G.nodes[astar_path[0]]['pos'][0]-1, G.nodes[astar_path[0]]
+                                          ['pos'][1], G.nodes[astar_path[0]]['pos'][0], G.nodes[astar_path[0]]['pos'][1], G.nodes[astar_path[1]]['pos'][0], G.nodes[astar_path[1]]['pos'][1])
+    if left == 1:
+        initial_angle = 180 - initial_angle
+    else:
+        initial_angle = initial_angle + 180
+
     if len(astar_path) < 3:
         x1, y1 = G.nodes[astar_path[0]]['pos']
         x2, y2 = G.nodes[astar_path[1]]['pos']
@@ -476,7 +483,7 @@ def result_backend(start, end):
 
     if current_distance is not None:
         merged_data.append({'distance': current_distance})
-    return merged_data, initial_way_elevator, astar_path
+    return merged_data, initial_way_elevator, astar_path, initial_angle
 
 
 if __name__ == "__main__":
