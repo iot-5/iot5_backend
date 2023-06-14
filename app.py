@@ -50,11 +50,15 @@ def find_path():
     start = data['start']
     end = data['end']
     if data['start'][0] == '4':
+        if start == "4층 아르테크네":
+            start == "7"
         final_path, initial_pos, astar_path, intial_angle = path2.result_backend(
             start, end)
         path_image = path2.show_on_image(astar_path)
 
     elif data['start'][0] == '5':
+        if start == "5층 아르테크네 앞 엘베":
+            start = "8"
         final_path, initial_pos, astar_path, intial_angle = path2.result_backend(
             start, end)
         path_image = path3.show_on_image(astar_path)

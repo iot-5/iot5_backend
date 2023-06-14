@@ -196,10 +196,10 @@ def set_nodes():
         409.3, 1633.25, 667.29, 739.5))
     G.add_edge("6", "8", weight=ueclidian_distance(667.29, 739.5, 828.5, 181))
 
-    G.add_node("테라스", pos=(828.5, 794))
+    G.add_node("4층테라스", pos=(828.5, 794))
     G.add_node("테라스_1", pos=(828.5, 739.5))  # 5,6 라인
 
-    G.add_edge("테라스", "테라스_1", weight=ueclidian_distance(
+    G.add_edge("4층테라스", "테라스_1", weight=ueclidian_distance(
         828.5, 794, 828.5, 739.5))
     G.add_edge("테라스_1", "6", weight=ueclidian_distance(
         828.5, 739.5, 667.29, 739.5))
@@ -208,13 +208,13 @@ def set_nodes():
 
     # 엘베 근처노드
     # G.add_node("9", pos=(835, 739.5))  # 5,6라인
-    G.add_node("테라스 앞 엘베", pos=(790.69, 739.5))  # 5,6라인
+    G.add_node("4층 테라스앞 엘베", pos=(790.69, 739.5))  # 5,6라인
 
     # G.add_edge("5", "9", weight=ueclidian_distance(909, 739.5, 835, 739.5))
     # G.add_edge("6", "9", weight=ueclidian_distance(667.29, 739.5, 835, 739.5))
-    G.add_edge("5", "테라스 앞 엘베", weight=ueclidian_distance(
+    G.add_edge("5", "4층 테라스앞 엘베", weight=ueclidian_distance(
         909, 739.5, 790.69, 739.5))
-    G.add_edge("6", "테라스 앞 엘베", weight=ueclidian_distance(
+    G.add_edge("6", "4층 테라스앞 엘베", weight=ueclidian_distance(
         667.29, 739.5, 790.69, 739.5))
     # G.add_edge("3", "11", weight=ueclidian_distance(
     #     909, 1633.25, 790.69, 1633.25))
@@ -224,13 +224,13 @@ def set_nodes():
     #     909, 1882.5, 790.69, 1882.5))
     # G.add_edge("2", "12", weight=ueclidian_distance(
     #     338, 1882.5, 790.69, 1882.5))
-    G.add_node("게시판 앞 엘베", pos=(790.69, 1731.25))
+    G.add_node("4층 게시판 엘베", pos=(790.69, 1731.25))
     G.add_node("게시판 앞 엘베_1", pos=(790.69, 1633.25))  # 3,4라인
     G.add_node("게시판 앞 엘베_2", pos=(790.69, 1882.5))  # 1,2라인
 
-    G.add_edge("게시판 앞 엘베", "게시판 앞 엘베_1", weight=ueclidian_distance(
+    G.add_edge("4층 게시판 엘베", "게시판 앞 엘베_1", weight=ueclidian_distance(
         1731.25, 790.69, 790.69, 1633.25))
-    G.add_edge("게시판 앞 엘베", "게시판 앞 엘베_2", weight=ueclidian_distance(
+    G.add_edge("4층 게시판 엘베", "게시판 앞 엘베_2", weight=ueclidian_distance(
         1731.25, 790.69, 790.69, 1882.5))
 
     G.add_edge("게시판 앞 엘베_1", "3", weight=ueclidian_distance(
