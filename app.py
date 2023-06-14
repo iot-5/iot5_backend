@@ -37,6 +37,8 @@ def predict():
     location = predicter.predict(aps)
     return jsonify({"location": location})
 
+
+
 @app.route('/path', methods=['POST'])
 def find_path():
     data = request.get_json()
@@ -50,11 +52,28 @@ def find_path():
     else:
         start_direct = "None-개발중"
 
+    result_path = []
+
+    for i in range(len(final_path)):
+        if 'distance' in final_path[i]:
+            distance = final_path[i]['distance']
+        else:
+            distance = 0
+
+        if 'angle' in final_path[i]:
+            angle = final_path[i]['angle']
+        else:
+            angle = 0
+
+        item = {'distance': distance, 'angle': angle}
+        result_path.append(item)
+
+
     path_image = show_on_image(astar_path)
 
     response = {
         "start_direction": start_direct,
-        "path": final_path,
+        "path": result_path,
         "image": path_image,
     }
 
