@@ -49,6 +49,13 @@ def calculate_angle(x1, y1, x2, y2, x3, y3):
 
         angle_deg = math.degrees(angle_rad)
 
+    else:
+        angle_deg = 0
+        print(x1, y1)
+        print(x2, y2)
+        print(x3, y3)
+        if (x2-x1) * (x2-x3) < 0:
+            left = True
     return angle_deg, left
 
 
@@ -105,6 +112,20 @@ def add_edges_from_top_line(G, top_line_nodes):
             x1, y1, 375.5, 1610.5))
         G.add_edge(node1, "6", weight=ueclidian_distance(x1, y1, 637.54, 707))
         G.add_edge(node1, "8", weight=ueclidian_distance(x1, y1, 796.5, 154))
+
+
+def add_edges_from_right_line(G, right_line_nodes):
+    for i in range(len(right_line_nodes) - 1):
+
+        node1 = right_line_nodes[i]
+        node2 = right_line_nodes[i + 1]
+        x1, y1 = G.nodes[node1]['pos']
+        x2, y2 = G.nodes[node2]['pos']
+        weight = ueclidian_distance(x1, y1, x2, y2)
+        G.add_edge(node1, node2, weight=weight)
+        # node는 1,2번 노드와 연결
+        G.add_edge(node1, "1", weight=ueclidian_distance(x1, y1, 880, 1846.5))
+        G.add_edge(node1, "2", weight=ueclidian_distance(x1, y1, 310, 1846.5))
 
 
 def calculate_third_side_length(side1, side2, angle):
@@ -245,14 +266,15 @@ def set_nodes():
 
     # Add edges based on the bottom line and top line
     bottom_line_nodes = [room['name']
-                         for room in data['rooms'] if room.get('bottom', 0) == 0]
+                         for room in data['rooms'] if room['bottom'] == 0]
     top_line_nodes = [room['name']
-                      for room in data['rooms'] if room.get('bottom', 0) == 1]
-    elevator_nodes = [room['name']
-                      for room in data['rooms'] if room.get('bottom', 2) == 1]
+                      for room in data['rooms'] if room['bottom'] == 1]
+    right_line_nodes = [room['name']
+                        for room in data['rooms'] if room['bottom'] == 2]
+
     add_edges_from_bottom_line(G, bottom_line_nodes)
     add_edges_from_top_line(G, top_line_nodes)
-
+    add_edges_from_right_line(G, right_line_nodes)
     # add edge in reverse direction
     for node1, node2 in G.edges():
         G.add_edge(node2, node1, weight=G[node1][node2][0]['weight'])
@@ -301,6 +323,7 @@ def result(start, end):
     real_world_scale = 0.04796469368
     real_world_angle = 6.25
     astar_path = nx.astar_path(G, start, end)
+    print("node: ", astar_path)
     distance = 0
     final_path = []
     if (G.nodes[astar_path[0]]['pos'][1] < G.nodes[astar_path[1]]['pos'][1]):
@@ -395,6 +418,7 @@ def result_backend(start, end):
     real_world_angle = 6.25
     astar_path = nx.astar_path(G, start, end)
     distance = 0
+    print("node: ", astar_path)
     final_path = []
     if (G.nodes[astar_path[0]]['pos'][1] < G.nodes[astar_path[1]]['pos'][1]):
         initial_way_elevator = 1
