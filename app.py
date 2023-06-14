@@ -3,14 +3,18 @@ from io import BytesIO
 
 from flask import Flask, request, jsonify
 
-from path2 import *
-from path3 import set_nodes as set_nodes_5
+import path2
+import path3
+# from path2 import *
+# from path3 import set_nodes as set_nodes_5
+
+
 from whereami import *
 
 
 # Set G on initial
-set_nodes_5()
-set_nodes()
+path3.set_nodes()
+path2.set_nodes()
 
 app = Flask(__name__)
 
@@ -45,14 +49,17 @@ def find_path():
     data = request.get_json()
     start = data['start']
     end = data['end']
-    final_path, initial_pos, astar_path, intial_angle = result_backend(
-        start, end)
-    if initial_pos == 0:
-        start_direct = "left"
-    elif initial_pos == 1:
-        start_direct = "right"
+    if data['start'][0] == '4':
+        final_path, initial_pos, astar_path, intial_angle = path2.result_backend(
+            start, end)
+        path_image = path2.show_on_image(astar_path)
+
+    elif data['start'][0] == '5':
+        final_path, initial_pos, astar_path, intial_angle = path2.result_backend(
+            start, end)
+        path_image = path3.show_on_image(astar_path)
     else:
-        start_direct = "None-개발중"
+        print("인식 할 수 없음")
 
     result_path = []
 
@@ -70,10 +77,9 @@ def find_path():
         item = {'distance': distance, 'angle': angle}
         result_path.append(item)
 
-    path_image = show_on_image(astar_path)
 
     response = {
-        "start_direction": start_direct,
+        "start_direction": intial_angle,
         "path": result_path,
         "image": path_image,
     }
